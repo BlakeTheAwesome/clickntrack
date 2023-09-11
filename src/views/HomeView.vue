@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import PageTracker from '@/pages/PageTracker.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <PageTracker />
   </main>
 </template>
