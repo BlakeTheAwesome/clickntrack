@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useTrackerStore } from '@/stores/trackerStore';
+const trackerStore = useTrackerStore();
 
 const props = defineProps<{
   dexNum: number | null
@@ -17,11 +19,26 @@ const margins = computed(() => {
   return '-12.5% calc(0%) -12.5% calc(0%)'
 })
 
-const bgCol = computed(() => (props.dexNum !== null ? 'lightgray' : 'transparent'))
+const trackerState = computed(() => props.dexNum !== null ? trackerStore.getClickInfo(props.dexNum) : null)
+
+const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
+
+function onLeftClick() {
+  if (props.dexNum !== null) {
+    trackerStore.incrementClickCount(props.dexNum)
+  }
+}
+
+function onRightClick() {
+  if (props.dexNum !== null) {
+    trackerStore.decrementClickCount(props.dexNum)
+  }
+}
+
 </script>
 
 <template>
-  <div :class="`icon-pokemon layout-${layout}`">
+  <div :class="`icon-pokemon layout-${layout}`" @click="onLeftClick" @click.right.prevent="onRightClick">
     {{ dexNum }}
   </div>
 </template>
@@ -32,6 +49,7 @@ const bgCol = computed(() => (props.dexNum !== null ? 'lightgray' : 'transparent
   place-content: center;
   background-color: v-bind(bgCol);
   margin: v-bind(margins);
+  user-select: none;
 
   &.layout-hex {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
