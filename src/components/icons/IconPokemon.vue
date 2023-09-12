@@ -39,7 +39,7 @@ function onRightClick() {
 
 <template>
   <div :class="`icon-pokemon layout-${layout}`" @click="onLeftClick" @click.right.prevent="onRightClick">
-    {{ dexNum }}
+    <img v-if="dexNum !== null" :src="`pokemon/sprites/${dexNum}.png`" :alt="`#${dexNum}`" />
   </div>
 </template>
 
@@ -50,9 +50,16 @@ function onRightClick() {
   background-color: v-bind(bgCol);
   margin: v-bind(margins);
   user-select: none;
+  cursor: pointer;
 
   &.layout-hex {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  & img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
   }
 }
 </style>

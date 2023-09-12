@@ -148,7 +148,7 @@ const rowLen = computed(() => {
 
 <template>
   <div class="pokemon-tracker">
-    <div :class="`pt-grid layout-${layout}`">
+    <div :class="`pt-grid layout-${layout}`" @click.right.prevent="">
       <template v-for="(row, rowIdx) in rows" :key="rowIdx">
         <template v-for="(dexNum, dexIdx) in row" :key="`${rowIdx}-${dexIdx}`">
           <IconPokemon :dexNum="dexNum" :layout="layout" :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)" />

@@ -1,0 +1,1 @@
+These sprites were sourced from this repository: https://github.com/PokeAPI/sprites/
