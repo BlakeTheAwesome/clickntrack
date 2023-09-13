@@ -8,6 +8,7 @@ const props = defineProps<{
   item: TrackerItem | null
   layout: 'grid' | 'hex'
   offsetRow: boolean
+  filtered?: boolean
 }>()
 
 const margins = computed(() => {
@@ -26,6 +27,8 @@ const trackerState = computed(() => (itemId.value === null ? null : trackerStore
 
 const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
 
+const overlayCol = computed(() => (props.item && props.filtered ? 'rgba(0, 0, 0, 0.5)' : 'transparent'))
+
 function onLeftClick() {
   if (itemId.value !== null) {
     trackerStore.incrementClickCount(itemId.value)
@@ -42,6 +45,7 @@ function onRightClick() {
 <template>
   <div :class="`grid-icon layout-${layout}`" @click="onLeftClick" @click.right.prevent="onRightClick">
     <img v-if="item !== null" :src="item.img" :alt="item.displayName" />
+    <div class="overlay"></div>
   </div>
 </template>
 
@@ -53,15 +57,22 @@ function onRightClick() {
   margin: v-bind(margins);
   user-select: none;
   cursor: pointer;
+  grid: 'cell' 1fr / 1fr;
 
   &.layout-hex {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
 
   & img {
+    grid-area: cell;
     height: 100%;
     width: 100%;
     object-fit: contain;
+  }
+
+  & .overlay {
+    grid-area: cell;
+    background-color: v-bind(overlayCol);
   }
 }
 </style>

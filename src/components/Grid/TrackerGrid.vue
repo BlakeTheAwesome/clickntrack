@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import IconPokemon from './icons/GridIcon.vue'
+import GridIcon from './GridIcon.vue'
+import { getIdsToFilterOut } from '@/scripts/filterUtils'
 import type { TrackerItem } from '@/types/trackerItem'
 
 // Add a 'search key' prop here
@@ -8,6 +9,7 @@ const props = defineProps<{
   gridItems: TrackerItem[]
   gridRowLen: number
   cellSize: string
+  filter?: string
   layout: 'grid' | 'hex'
 }>()
 
@@ -157,14 +159,26 @@ const numHexRings = computed(() => {
 const rowLen = computed(() => {
   return rows.value.reduce((val, row) => Math.max(val, row.length), -Infinity)
 })
+
+const filteredIds = computed(() => {
+  if (!props.filter) {
+    return new Set()
+  }
+  return getIdsToFilterOut(props.filter, props.gridItems)
+})
 </script>
 
 <template>
-  <div class="pokemon-tracker">
+  <div class="tracker-grid">
     <div :class="`pt-grid layout-${layout}`" @click.right.prevent="">
       <template v-for="(row, rowIdx) in rows" :key="rowIdx">
         <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
-          <IconPokemon :item="item" :layout="layout" :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)" />
+          <GridIcon
+            :item="item"
+            :layout="layout"
+            :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)"
+            :filtered="filteredIds.has(item?.id)"
+          />
         </template>
       </template>
     </div>
