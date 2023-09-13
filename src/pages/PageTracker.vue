@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import PokemonTracker from '@/components/PokemonTracker.vue'
+import TrackerGrid from '@/components/TrackerGrid.vue'
 import { computed, ref } from 'vue'
 import { useTrackerStore } from '@/stores/trackerStore'
 import { shuffle } from '@/scripts/randomUtils'
+import pokemonList from '@/assets/pokemon-list.json'
 const trackerStore = useTrackerStore()
 
 const numItems = ref(151)
@@ -12,7 +13,7 @@ const cellSize = ref('48px')
 const seed = ref('')
 
 const items = computed(() => {
-  const itemSelection = new Array(numItems.value).fill(0).map((_, i) => i + 1)
+  const itemSelection = pokemonList.slice(0, numItems.value)
   return shuffle(itemSelection, seed.value)
 })
 const layout = computed(() => (isHex.value ? 'hex' : 'grid'))
@@ -26,5 +27,5 @@ const layout = computed(() => (isHex.value ? 'hex' : 'grid'))
   <span>seed: <input type="text" v-model="seed" /></span>
   <span>isHex: <input type="checkbox" v-model="isHex" /></span>
 
-  <PokemonTracker :dexNumbers="items" :gridRowLen="rowLen" :cellSize="cellSize" :layout="layout" />
+  <TrackerGrid :gridItems="items" :gridRowLen="rowLen" :cellSize="cellSize" :layout="layout" />
 </template>

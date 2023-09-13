@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import IconPokemon from './icons/IconPokemon.vue'
+import IconPokemon from './icons/GridIcon.vue'
+import type { TrackerItem } from '@/types/trackerItem'
 
+// Add a 'search key' prop here
 const props = defineProps<{
-  dexNumbers: number[]
+  gridItems: TrackerItem[]
   gridRowLen: number
   cellSize: string
   layout: 'grid' | 'hex'
@@ -12,7 +14,7 @@ const props = defineProps<{
 const filledRadius = computed(() => {
   let radius = numHexRings.value
   let numToFill = maxCellsInHexRadius(radius)
-  if (numToFill > props.dexNumbers.length) {
+  if (numToFill > props.gridItems.length) {
     radius--
   }
   return radius
@@ -21,8 +23,8 @@ const filledRadius = computed(() => {
 const EmptyCell = Symbol('EmptyCell')
 
 const rows = computed(() => {
-  const placeholders = new Array(props.dexNumbers.length).fill(EmptyCell)
-  const rows: (number | null)[][] = []
+  const placeholders = new Array(props.gridItems.length).fill(EmptyCell)
+  const rows: (TrackerItem | null)[][] = []
   if (props.layout === 'hex') {
     let radius = filledRadius.value
 
@@ -40,7 +42,7 @@ const rows = computed(() => {
       radius++
       const numToAdd = Math.min(rows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        rows[i].push(placeholders.shift() as number)
+        rows[i].push(placeholders.shift() as TrackerItem)
       }
       for (let i = numToAdd; i < rows.length; i++) {
         rows[i].push(null)
@@ -50,7 +52,7 @@ const rows = computed(() => {
     // Next fill along the bottom
     if (placeholders.length > 0) {
       const numToAdd = Math.min(radius - 1, placeholders.length)
-      const row: (number | null)[] = placeholders.splice(0, numToAdd)
+      const row = placeholders.splice(0, numToAdd)
       while (row.length < radius - 1) {
         row.push(null)
       }
@@ -60,7 +62,7 @@ const rows = computed(() => {
     // Next fill on the top
     if (placeholders.length > 0) {
       const numToAdd = Math.min(radius - 1, placeholders.length)
-      const row: (number | null)[] = placeholders.splice(0, numToAdd)
+      const row = placeholders.splice(0, numToAdd)
       while (row.length < radius - 1) {
         row.push(null)
       }
@@ -72,18 +74,18 @@ const rows = computed(() => {
       radius++
       const numToAdd = Math.min(rows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        rows[i].push(placeholders.shift() as number)
+        rows[i].push(placeholders.shift() as TrackerItem)
       }
       for (let i = numToAdd; i < rows.length; i++) {
         rows[i].push(null)
       }
     }
 
-    const itemsRemaining = [...props.dexNumbers]
+    const itemsRemaining = [...props.gridItems]
     for (const row of rows) {
       for (let i = 0; i < row.length; i++) {
         if (row[i] !== null) {
-          row[i] = itemsRemaining.shift() as number
+          row[i] = itemsRemaining.shift() as TrackerItem
         }
       }
     }
@@ -102,7 +104,7 @@ const rows = computed(() => {
       }
     }
   } else {
-    const itemsRemaining = [...props.dexNumbers]
+    const itemsRemaining = [...props.gridItems]
     for (let i = 0; i < itemsRemaining.length; i += props.gridRowLen) {
       rows.push(itemsRemaining.slice(i, i + props.gridRowLen))
     }
@@ -144,7 +146,7 @@ const numHexRings = computed(() => {
   let radius = 1
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    if (maxCellsInHexRadius(radius) >= props.dexNumbers.length) {
+    if (maxCellsInHexRadius(radius) >= props.gridItems.length) {
       break
     }
     radius++
@@ -161,8 +163,8 @@ const rowLen = computed(() => {
   <div class="pokemon-tracker">
     <div :class="`pt-grid layout-${layout}`" @click.right.prevent="">
       <template v-for="(row, rowIdx) in rows" :key="rowIdx">
-        <template v-for="(dexNum, dexIdx) in row" :key="`${rowIdx}-${dexIdx}`">
-          <IconPokemon :dexNum="dexNum" :layout="layout" :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)" />
+        <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
+          <IconPokemon :item="item" :layout="layout" :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)" />
         </template>
       </template>
     </div>

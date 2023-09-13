@@ -1,0 +1,1 @@
+This CSV was downloaded from https://www.kaggle.com/datasets/takamasakato/pokemon-all-status-data

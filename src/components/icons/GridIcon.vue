@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useTrackerStore } from '@/stores/trackerStore'
+import type { TrackerItem } from '@/types/trackerItem'
 const trackerStore = useTrackerStore()
 
 const props = defineProps<{
-  dexNum: number | null
+  item: TrackerItem | null
   layout: 'grid' | 'hex'
   offsetRow: boolean
 }>()
@@ -19,31 +20,33 @@ const margins = computed(() => {
   return '-12.5% calc(0%) -12.5% calc(0%)'
 })
 
-const trackerState = computed(() => (props.dexNum !== null ? trackerStore.getClickInfo(props.dexNum) : null))
+const itemId = computed(() => props.item?.id ?? null)
+
+const trackerState = computed(() => (itemId.value === null ? null : trackerStore.getClickInfo(itemId.value)))
 
 const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
 
 function onLeftClick() {
-  if (props.dexNum !== null) {
-    trackerStore.incrementClickCount(props.dexNum)
+  if (itemId.value !== null) {
+    trackerStore.incrementClickCount(itemId.value)
   }
 }
 
 function onRightClick() {
-  if (props.dexNum !== null) {
-    trackerStore.decrementClickCount(props.dexNum)
+  if (itemId.value !== null) {
+    trackerStore.decrementClickCount(itemId.value)
   }
 }
 </script>
 
 <template>
-  <div :class="`icon-pokemon layout-${layout}`" @click="onLeftClick" @click.right.prevent="onRightClick">
-    <img v-if="dexNum !== null" :src="`pokemon/sprites/${dexNum}.png`" :alt="`#${dexNum}`" />
+  <div :class="`grid-icon layout-${layout}`" @click="onLeftClick" @click.right.prevent="onRightClick">
+    <img v-if="item !== null" :src="item.img" :alt="item.displayName" />
   </div>
 </template>
 
 <style scoped lang="postcss">
-.icon-pokemon {
+.grid-icon {
   display: grid;
   place-content: center;
   background-color: v-bind(bgCol);
