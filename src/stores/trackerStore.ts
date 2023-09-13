@@ -1,22 +1,33 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-type ItemState = { clickCount: number };
-type IdState = Record<number, ItemState>;
+type ItemState = { clickCount: number }
+type IdState = Record<number, ItemState>
 
 const defaultColours = [
-  'black', '#cccccc', '#3366E6', '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', 
-  '#00B3E6','#E6B333', '#999966', '#99FF99', '#B34D4D', '#80B300',
-];
+  'black',
+  '#cccccc',
+  '#3366E6',
+  '#FF6633',
+  '#FFB399',
+  '#FF33FF',
+  '#FFFF99',
+  '#00B3E6',
+  '#E6B333',
+  '#999966',
+  '#99FF99',
+  '#B34D4D',
+  '#80B300',
+]
 
 export const useTrackerStore = defineStore('tracker', () => {
   const idState = reactive<IdState>({})
-  const maxClickCount = ref(2);
-  const colours = reactive(defaultColours);
+  const maxClickCount = ref(2)
+  const colours = reactive(defaultColours)
 
   function getClickInfo(id: number) {
-    const count = idState[id]?.clickCount ?? 0;
-    const colour = colours[count + 1] ?? '#000000';
+    const count = idState[id]?.clickCount ?? 0
+    const colour = colours[count + 1] ?? '#000000'
     return {
       count,
       colour,
@@ -36,6 +47,6 @@ export const useTrackerStore = defineStore('tracker', () => {
     }
     idState[id].clickCount = Math.max(idState[id].clickCount - 1, -1)
   }
-  
+
   return { getClickInfo, incrementClickCount, decrementClickCount, maxClickCount }
 })

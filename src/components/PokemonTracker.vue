@@ -18,8 +18,10 @@ const filledRadius = computed(() => {
   return radius
 })
 
+const EmptyCell = Symbol('EmptyCell')
+
 const rows = computed(() => {
-  const itemsRemaining = [...props.dexNumbers]
+  const placeholders = new Array(props.dexNumbers.length).fill(EmptyCell)
   const rows: (number | null)[][] = []
   if (props.layout === 'hex') {
     let radius = filledRadius.value
@@ -29,16 +31,16 @@ const rows = computed(() => {
     for (let i = 0; i < numRows; i++) {
       let itemCount = radius
       itemCount += i < midRowIndex ? i : numRows - i - 1
-      const items = itemsRemaining.splice(0, itemCount)
+      const items = placeholders.splice(0, itemCount)
       rows.push(items)
     }
 
     // First fill on the right
-    if (itemsRemaining.length > 0) {
+    if (placeholders.length > 0) {
       radius++
-      const numToAdd = Math.min(rows.length, itemsRemaining.length)
+      const numToAdd = Math.min(rows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        rows[i].push(itemsRemaining.shift() as number)
+        rows[i].push(placeholders.shift() as number)
       }
       for (let i = numToAdd; i < rows.length; i++) {
         rows[i].push(null)
@@ -46,9 +48,9 @@ const rows = computed(() => {
     }
 
     // Next fill along the bottom
-    if (itemsRemaining.length > 0) {
-      const numToAdd = Math.min(radius - 1, itemsRemaining.length)
-      const row: (number | null)[] = itemsRemaining.splice(0, numToAdd)
+    if (placeholders.length > 0) {
+      const numToAdd = Math.min(radius - 1, placeholders.length)
+      const row: (number | null)[] = placeholders.splice(0, numToAdd)
       while (row.length < radius - 1) {
         row.push(null)
       }
@@ -56,9 +58,9 @@ const rows = computed(() => {
     }
 
     // Next fill on the top
-    if (itemsRemaining.length > 0) {
-      const numToAdd = Math.min(radius - 1, itemsRemaining.length)
-      const row: (number | null)[] = itemsRemaining.splice(0, numToAdd)
+    if (placeholders.length > 0) {
+      const numToAdd = Math.min(radius - 1, placeholders.length)
+      const row: (number | null)[] = placeholders.splice(0, numToAdd)
       while (row.length < radius - 1) {
         row.push(null)
       }
@@ -66,17 +68,25 @@ const rows = computed(() => {
     }
 
     // Fill along the right again
-    if (itemsRemaining.length > 0) {
+    if (placeholders.length > 0) {
       radius++
-      const numToAdd = Math.min(rows.length, itemsRemaining.length)
+      const numToAdd = Math.min(rows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        rows[i].push(itemsRemaining.shift() as number)
+        rows[i].push(placeholders.shift() as number)
       }
       for (let i = numToAdd; i < rows.length; i++) {
         rows[i].push(null)
       }
     }
 
+    const itemsRemaining = [...props.dexNumbers]
+    for (const row of rows) {
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] !== null) {
+          row[i] = itemsRemaining.shift() as number
+        }
+      }
+    }
     console.assert(itemsRemaining.length === 0, 'Not all items were placed in the grid')
 
     const expectedRowLength = rows.reduce((val, row) => Math.max(val, row.length), -Infinity)
@@ -92,6 +102,7 @@ const rows = computed(() => {
       }
     }
   } else {
+    const itemsRemaining = [...props.dexNumbers]
     for (let i = 0; i < itemsRemaining.length; i += props.gridRowLen) {
       rows.push(itemsRemaining.slice(i, i + props.gridRowLen))
     }

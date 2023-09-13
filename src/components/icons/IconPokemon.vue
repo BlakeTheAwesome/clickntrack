@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useTrackerStore } from '@/stores/trackerStore';
-const trackerStore = useTrackerStore();
+import { useTrackerStore } from '@/stores/trackerStore'
+const trackerStore = useTrackerStore()
 
 const props = defineProps<{
   dexNum: number | null
@@ -19,7 +19,7 @@ const margins = computed(() => {
   return '-12.5% calc(0%) -12.5% calc(0%)'
 })
 
-const trackerState = computed(() => props.dexNum !== null ? trackerStore.getClickInfo(props.dexNum) : null)
+const trackerState = computed(() => (props.dexNum !== null ? trackerStore.getClickInfo(props.dexNum) : null))
 
 const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
 
@@ -34,7 +34,6 @@ function onRightClick() {
     trackerStore.decrementClickCount(props.dexNum)
   }
 }
-
 </script>
 
 <template>
