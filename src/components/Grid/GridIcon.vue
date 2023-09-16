@@ -2,17 +2,18 @@
 import { computed } from 'vue'
 import { useTrackerStore } from '@/stores/trackerStore'
 import type { TrackerItem } from '@/types/trackerItem'
+import type { ItemShape } from '@/stores/layoutStore'
 const trackerStore = useTrackerStore()
 
 const props = defineProps<{
   item: TrackerItem | null
-  layout: 'grid' | 'hex'
+  itemShape: ItemShape
   offsetRow: boolean
   filtered?: boolean
 }>()
 
 const margins = computed(() => {
-  if (props.layout === 'grid') {
+  if (props.itemShape === 'Square') {
     return '0'
   }
   if (props.offsetRow) {
@@ -43,7 +44,7 @@ function onRightClick() {
 </script>
 
 <template>
-  <div :class="`grid-icon layout-${layout}`" @click="onLeftClick" @click.right.prevent="onRightClick">
+  <div :class="`grid-icon layout-${itemShape.toLowerCase()}`" @click="onLeftClick" @click.right.prevent="onRightClick">
     <img v-if="item !== null" :src="item.img" :alt="item.displayName" />
     <div class="overlay"></div>
   </div>

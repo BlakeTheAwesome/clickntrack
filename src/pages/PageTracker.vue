@@ -1,28 +1,35 @@
 <script setup lang="ts">
-import TrackerGrid from '@/components/Grid/TrackerGrid.vue'
 import { computed, ref } from 'vue'
-import { useTrackerStore } from '@/stores/trackerStore'
-import { shuffle } from '@/scripts/randomUtils'
-import pokemonList from '@/assets/pokemon-list.json'
-const trackerStore = useTrackerStore()
+import { storeToRefs } from 'pinia'
+import Splitter from 'primevue/splitter'
+import SplitterPanel from 'primevue/splitterpanel'
 
-const numItems = ref(151)
-const rowLen = ref(10)
-const isHex = ref(false)
-const shuffleItems = ref(false)
-const cellSize = ref('48px')
+import TrackerGrid from '@/components/Grid/TrackerGrid.vue'
+import TrackerStatus from '@/components/TrackerStatus.vue'
+import HeaderBar from '@/components/HeaderBar.vue'
+import SettingsPanelVue from '@/components/SettingsPanel.vue'
+
+import { useTrackerStore } from '@/stores/trackerStore'
+import { useLayoutStore } from '@/stores/layoutStore'
+import { shuffle } from '@/scripts/randomUtils'
+
+import pokemonList from '@/assets/pokemon-list.json'
+
+const trackerStore = useTrackerStore()
+const layoutStore = useLayoutStore()
+
+const { cellSize, layout, itemShape, gridRowLength } = storeToRefs(layoutStore)
+
 const filter = ref('')
-const seed = ref('')
 
 const items = computed(() => {
-  if (shuffleItems.value) {
-    return shuffle(pokemonList, seed.value).slice(0, numItems.value)
+  if (trackerStore.shuffleItems) {
+    return shuffle(pokemonList, trackerStore.seed).slice(0, trackerStore.numItems)
   } else {
-    const itemSelection = pokemonList.slice(0, numItems.value)
-    return shuffle(itemSelection, seed.value)
+    const itemSelection = pokemonList.slice(0, trackerStore.numItems)
+    return shuffle(itemSelection, trackerStore.seed)
   }
 })
-const layout = computed(() => (isHex.value ? 'hex' : 'grid'))
 
 function onKey(event: KeyboardEvent) {
   const key = event.key
@@ -34,32 +41,77 @@ function onKey(event: KeyboardEvent) {
     filter.value = ''
   }
 }
+
+const showSettings = ref(true)
+function toggleSettings() {
+  showSettings.value = !showSettings.value
+}
+
+const bgColor = computed(() => `#${layoutStore.bgColor}`)
+const contentPadding = computed(() => {
+  const minPadding = 16
+  const padding = Math.max(minPadding, cellSize.value)
+  return `${padding}px ${padding}px ${minPadding}px ${padding}px`
+})
 </script>
 
 <template>
-  <span>rowLen: <input type="number" min="1" max="1000" v-model="rowLen" /></span>
-  <span>numItems: <input type="number" min="1" max="10000" v-model="numItems" /></span>
-  <span>maxClicks: <input type="number" min="1" max="100" v-model="trackerStore.maxClickCount" /></span>
-  <span>cellSize: <input type="text" size="8" v-model="cellSize" /></span>
-  <span>seed: <input type="text" v-model="seed" /></span>
-  <span>filter: <input type="filter" v-model="filter" /></span>
-  <span>isHex: <input type="checkbox" v-model="isHex" /></span>
-  <span>shuffleItems: <input type="checkbox" v-model="shuffleItems" /></span>
-
-  <TrackerGrid
-    class="pt-tracker-grid"
-    tabindex="0"
-    :gridItems="items"
-    :gridRowLen="rowLen"
-    :cellSize="cellSize"
-    :layout="layout"
-    :filter="filter"
-    @keydown="onKey"
-  />
+  <div class="page-tracker">
+    <div class="pt-header">
+      <HeaderBar @toggleSettings="toggleSettings" />
+    </div>
+    <div>
+      <Splitter class="pt-splitter">
+        <SplitterPanel :size="75" class="pt-content" tabindex="0" @keydown="onKey">
+          <div class="pt-grid-area">
+            <TrackerGrid
+              :gridItems="items"
+              :gridRowLen="gridRowLength"
+              :cellSize="cellSize"
+              :layout="layout"
+              :itemShape="itemShape"
+              :filter="filter"
+            />
+            <TrackerStatus :items="items" :filter="filter" />
+          </div>
+        </SplitterPanel>
+        <SplitterPanel v-if="showSettings" :size="25" :min-size="25">
+          <SettingsPanelVue class="pt-settings" />
+        </SplitterPanel>
+      </Splitter>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="postcss">
-.pt-tracker-grid {
+.page-tracker {
+  height: 100%;
+  display: grid;
+  grid:
+    'header' auto
+    'content' 1fr / 1fr;
+
+  .pt-content {
+    background-color: v-bind(bgColor);
+  }
+
+  .pt-settings {
+    position: sticky;
+    top: 0;
+  }
+}
+
+.pt-splitter {
+  border: none;
+  height: 100%;
+}
+
+.pt-grid-area {
+  width: min-content;
+  padding: v-bind(contentPadding);
+}
+
+.pt-content {
   &:focus,
   &:focus-visible,
   &:focus-within {

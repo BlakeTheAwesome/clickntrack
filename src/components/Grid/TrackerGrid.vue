@@ -3,14 +3,16 @@ import { computed } from 'vue'
 import GridIcon from './GridIcon.vue'
 import { getIdsToFilterOut } from '@/scripts/filterUtils'
 import type { TrackerItem } from '@/types/trackerItem'
+import type { Layout, ItemShape } from '@/stores/layoutStore'
 
 // Add a 'search key' prop here
 const props = defineProps<{
   gridItems: TrackerItem[]
   gridRowLen: number
-  cellSize: string
+  cellSize: number
   filter?: string
-  layout: 'grid' | 'hex'
+  layout: Layout
+  itemShape: ItemShape
 }>()
 
 const filledRadius = computed(() => {
@@ -27,7 +29,7 @@ const EmptyCell = Symbol('EmptyCell')
 const rows = computed(() => {
   const placeholders = new Array(props.gridItems.length).fill(EmptyCell)
   const rows: (TrackerItem | null)[][] = []
-  if (props.layout === 'hex') {
+  if (props.layout === 'Hex') {
     let radius = filledRadius.value
 
     const numRows = radius * 2 - 1
@@ -115,13 +117,14 @@ const rows = computed(() => {
 })
 
 const padding = computed(() => {
-  const paddingVal = 2
-  switch (props.layout) {
-    case 'hex':
-      return `${paddingVal}px calc(${paddingVal}px * 0.75)`
-    case 'grid':
+  const basePadding = 2
+  const hexPadding = Math.ceil(basePadding * 0.75) + 1
+  switch (props.itemShape) {
+    case 'Hex':
+      return `${basePadding}px ${hexPadding}px`
+    case 'Square':
     default:
-      return `${paddingVal}px`
+      return `${basePadding}px`
   }
 })
 
@@ -166,16 +169,27 @@ const filteredIds = computed(() => {
   }
   return getIdsToFilterOut(props.filter, props.gridItems)
 })
+
+const cellSizeStr = computed(() => `${props.cellSize}px`)
+
+const margins = computed(() => {
+  if (props.itemShape === 'Square') {
+    return '0'
+  }
+  const halfCellSize = Math.floor(props.cellSize / 2)
+  const eighthCellSize = Math.floor(props.cellSize / 8)
+  return `${eighthCellSize}px -${halfCellSize}px ${eighthCellSize}px ${halfCellSize}px`
+})
 </script>
 
 <template>
-  <div class="tracker-grid">
-    <div :class="`pt-grid layout-${layout}`" @click.right.prevent="">
+  <div :class="`tracker-grid layout-${layout.toLowerCase()}`">
+    <div :class="`pt-grid layout-${layout.toLowerCase()}`" @click.right.prevent="">
       <template v-for="(row, rowIdx) in rows" :key="rowIdx">
         <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
           <GridIcon
             :item="item"
-            :layout="layout"
+            :itemShape="itemShape"
             :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)"
             :filtered="filteredIds.has(item?.id)"
           />
@@ -186,16 +200,19 @@ const filteredIds = computed(() => {
 </template>
 
 <style scoped>
+.tracker-grid {
+  width: min-content;
+  margin: v-bind(margins);
+}
 .pt-grid {
   display: grid;
-  grid-template-columns: repeat(v-bind(rowLen), v-bind(cellSize));
-  grid-auto-rows: v-bind(cellSize);
-  margin: v-bind(cellSize);
+  grid-template-columns: repeat(v-bind(rowLen), v-bind(cellSizeStr));
+  grid-auto-rows: v-bind(cellSizeStr);
+  width: min-content;
 
   &.layout-hex {
-    grid-auto-rows: calc(v-bind(cellSize) * 0.75);
-    border: 2px solid white;
+    grid-auto-rows: calc(v-bind(cellSizeStr) * 0.75);
   }
-  grid-gap: v-bind(padding);
+  gap: v-bind(padding);
 }
 </style>
