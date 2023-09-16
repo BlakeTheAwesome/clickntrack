@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "pinia": "^2.1.6",
+    "pinia-plugin-persistedstate": "^3.2.0",
     "rand-seed": "^1.0.2",
     "seedrandom": "^3.0.5",
     "vue": "^3.3.4",
