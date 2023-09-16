@@ -3,4 +3,6 @@ export type TrackerItem = {
   displayName: string
   keywords?: string[]
   img?: string
+  overlayText?: string
+  tooltip?: string
 }

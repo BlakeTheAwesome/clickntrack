@@ -5,7 +5,7 @@ type ItemState = { clickCount: number }
 type IdState = Record<number, ItemState>
 
 const defaultColours = [
-  'black',
+  '#000000',
   '#cccccc',
   '#3366E6',
   '#FF6633',
@@ -21,6 +21,7 @@ const defaultColours = [
 ]
 
 export const useTrackerStore = defineStore('tracker', () => {
+  // TODO: Persist this idState
   const idState = reactive<IdState>({})
   const maxClickCount = ref(2)
   const colours = reactive(defaultColours)

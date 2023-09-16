@@ -7,10 +7,11 @@ import InputText from 'primevue/inputtext'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 
-import { useLayoutStore, Layouts, type Layout, ItemShapes, type ItemShape } from '@/stores/layoutStore'
+import { useLayoutStore, Layouts, type Layout, ItemShapes, type ItemShape, DisplayTypes, type DisplayType } from '@/stores/layoutStore'
 import { useTrackerStore } from '@/stores/trackerStore'
 const LayoutsMutable = Layouts as unknown as Layout[]
 const ItemShapesMutable = ItemShapes as unknown as ItemShape[]
+const DisplayTypesMutable = DisplayTypes as unknown as DisplayType[]
 
 const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
@@ -19,7 +20,7 @@ const trackerStore = useTrackerStore()
 <template>
   <div class="settings-panel">
     <TabView>
-      <TabPanel header="Layout">
+      <TabPanel header="Board">
         <div class="sp-tab-content">
           <div class="sp-item-row">
             <span>Layout:</span
@@ -63,10 +64,13 @@ const trackerStore = useTrackerStore()
           </div>
         </div>
       </TabPanel>
-      <TabPanel header="Colors">
+      <TabPanel header="Display">
         <div class="sp-tab-content">
           <div class="sp-item-row">
             <span>Background Color:</span><ColorPicker class="sp-control" v-model="layoutStore.bgColor" />
+          </div>
+          <div class="sp-item-row">
+            Show Tooltips: <Checkbox class="sp-control" v-model="layoutStore.showTooltips" :binary="true" />
           </div>
           <div class="sp-item-row">
             <span>Max Clicks:</span
@@ -97,6 +101,21 @@ const trackerStore = useTrackerStore()
           <div class="sp-item-row">Seed: <InputText class="sp-control" v-model="trackerStore.seed" /></div>
           <div class="sp-item-row">
             Shuffle Available Items: <Checkbox class="sp-control" v-model="trackerStore.shuffleItems" :binary="true" />
+          </div>
+          <div class="sp-item-row">
+            <span>Display Type:</span
+            ><Dropdown
+              class="sp-control"
+              v-model="layoutStore.displayType"
+              :options="DisplayTypesMutable"
+              placeholder="Select a shape"
+            />
+          </div>
+          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+            <span>Image Text Color:</span><ColorPicker class="sp-control" v-model="layoutStore.itemTextColor" />
+          </div>
+          <div class="sp-item-row" >
+            <span>Highlight Covers Image:</span><Checkbox class="sp-control" v-model="layoutStore.highlightCoversImage" :binary="true" />
           </div>
         </div>
       </TabPanel>

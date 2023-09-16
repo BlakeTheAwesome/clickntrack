@@ -3,7 +3,8 @@ import { computed } from 'vue'
 import GridIcon from './GridIcon.vue'
 import { getIdsToFilterOut } from '@/scripts/filterUtils'
 import type { TrackerItem } from '@/types/trackerItem'
-import type { Layout, ItemShape } from '@/stores/layoutStore'
+import { type Layout, useLayoutStore } from '@/stores/layoutStore'
+const layoutStore = useLayoutStore()
 
 // Add a 'search key' prop here
 const props = defineProps<{
@@ -12,7 +13,6 @@ const props = defineProps<{
   cellSize: number
   filter?: string
   layout: Layout
-  itemShape: ItemShape
 }>()
 
 const filledRadius = computed(() => {
@@ -119,7 +119,7 @@ const rows = computed(() => {
 const padding = computed(() => {
   const basePadding = 2
   const hexPadding = Math.ceil(basePadding * 0.75) + 1
-  switch (props.itemShape) {
+  switch (layoutStore.itemShape) {
     case 'Hex':
       return `${basePadding}px ${hexPadding}px`
     case 'Square':
@@ -173,7 +173,7 @@ const filteredIds = computed(() => {
 const cellSizeStr = computed(() => `${props.cellSize}px`)
 
 const margins = computed(() => {
-  if (props.itemShape === 'Square') {
+  if (layoutStore.itemShape === 'Square') {
     return '0'
   }
   const halfCellSize = Math.floor(props.cellSize / 2)
@@ -189,7 +189,6 @@ const margins = computed(() => {
         <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
           <GridIcon
             :item="item"
-            :itemShape="itemShape"
             :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)"
             :filtered="filteredIds.has(item?.id)"
           />

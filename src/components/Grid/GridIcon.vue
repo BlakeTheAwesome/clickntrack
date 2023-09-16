@@ -2,18 +2,18 @@
 import { computed } from 'vue'
 import { useTrackerStore } from '@/stores/trackerStore'
 import type { TrackerItem } from '@/types/trackerItem'
-import type { ItemShape } from '@/stores/layoutStore'
+import { useLayoutStore } from '@/stores/layoutStore'
 const trackerStore = useTrackerStore()
+const layoutStore = useLayoutStore()
 
 const props = defineProps<{
   item: TrackerItem | null
-  itemShape: ItemShape
   offsetRow: boolean
   filtered?: boolean
 }>()
 
 const margins = computed(() => {
-  if (props.itemShape === 'Square') {
+  if (layoutStore.itemShape === 'Square') {
     return '0'
   }
   if (props.offsetRow) {
@@ -28,7 +28,9 @@ const trackerState = computed(() => (itemId.value === null ? null : trackerStore
 
 const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
 
-const overlayCol = computed(() => (props.item && props.filtered ? 'rgba(0, 0, 0, 0.5)' : 'transparent'))
+const overlayCol = computed(() => layoutStore.highlightCoversImage && trackerState.value?.count ? `${trackerState.value?.colour}77` : 'transparent' )
+
+const filterOverlayCol = computed(() => (props.item && props.filtered ? 'rgba(0, 0, 0, 0.5)' : 'transparent'))
 
 function onLeftClick() {
   if (itemId.value !== null) {
@@ -41,12 +43,22 @@ function onRightClick() {
     trackerStore.decrementClickCount(itemId.value)
   }
 }
+
+const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()}`);
+const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both');
+const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both');
+const textColor = computed(() => `#${layoutStore.itemTextColor}`);
+const tooltip = computed(() => layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null);
 </script>
 
 <template>
-  <div :class="`grid-icon layout-${itemShape.toLowerCase()}`" @click="onLeftClick" @click.right.prevent="onRightClick">
-    <img v-if="item !== null" :src="item.img" :alt="item.displayName" />
-    <div class="overlay"></div>
+  <div class="grid-icon" v-tooltip.bottom="tooltip" :class="layoutClass" @click="onLeftClick" @click.right.prevent="onRightClick">
+    <template v-if="item !== null">
+      <img v-if="showImage" :src="item.img" :alt="item.displayName" />
+      <div v-if="showText" class="gi-text">{{ item.overlayText ?? item.displayName }}</div>
+      <div class="overlay"></div>
+      <div class="filter-overlay"></div>
+    </template>
   </div>
 </template>
 
@@ -68,12 +80,30 @@ function onRightClick() {
     grid-area: cell;
     height: 100%;
     width: 100%;
+    min-height: 0;
+    min-width: 0;
     object-fit: contain;
+  }
+
+  & .gi-text {
+    grid-area: cell;
+    place-self: center;
+    text-align: center;
+    font-weight: bold;
+    color: v-bind(textColor);
+    background-color: rgba(0, 0, 0, 0.5);
+    word-break: break-word;
   }
 
   & .overlay {
     grid-area: cell;
     background-color: v-bind(overlayCol);
+  }
+  
+
+  & .filter-overlay {
+    grid-area: cell;
+    background-color: v-bind(filterOverlayCol);
   }
 }
 </style>
