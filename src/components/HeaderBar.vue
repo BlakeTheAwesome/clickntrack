@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
-const emit = defineEmits<{ toggleSettings: [] }>()
+const emit = defineEmits<{ toggleSettings: []; clear: [] }>()
 
 const githubLink = 'https://github.com/BlakeTheAwesome/clickntrack'
 </script>
@@ -11,6 +11,17 @@ const githubLink = 'https://github.com/BlakeTheAwesome/clickntrack'
     <div class="hb-controls">
       <span class="hb-author">By MutantSheepdog</span>
       <Button
+        v-tooltip.bottom="'Clear'"
+        icon="pi pi-ban"
+        severity="secondary"
+        text
+        raised
+        rounded
+        aria-label="Clear"
+        @click="emit('clear')"
+      />
+      <Button
+        v-tooltip.bottom="'Settings'"
         icon="pi pi-cog"
         severity="secondary"
         text
@@ -19,7 +30,7 @@ const githubLink = 'https://github.com/BlakeTheAwesome/clickntrack'
         aria-label="Toggle Settings"
         @click="emit('toggleSettings')"
       />
-      <a :href="githubLink">
+      <a :href="githubLink" v-tooltip.bottom="'GitHub'">
         <Button icon="pi pi-github" severity="secondary" text raised rounded aria-label="GitHub" />
       </a>
     </div>

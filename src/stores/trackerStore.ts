@@ -53,5 +53,11 @@ export const useTrackerStore = defineStore('tracker', () => {
     idState[id].clickCount = Math.max(idState[id].clickCount - 1, -1)
   }
 
-  return { getClickInfo, incrementClickCount, decrementClickCount, maxClickCount, numItems, seed, shuffleItems }
+  function clearTracker() {
+    for (const id in idState) {
+      idState[id].clickCount = 0
+    }
+  }
+
+  return { getClickInfo, incrementClickCount, decrementClickCount, maxClickCount, numItems, seed, shuffleItems, clearTracker }
 })

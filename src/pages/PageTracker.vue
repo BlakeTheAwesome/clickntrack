@@ -61,7 +61,7 @@ const contentPadding = computed(() => {
 <template>
   <div class="page-tracker">
     <div class="pt-header">
-      <HeaderBar @toggleSettings="toggleSettings" />
+      <HeaderBar @toggleSettings="toggleSettings" @clear="trackerStore.clearTracker" />
     </div>
     <div>
       <Splitter class="pt-splitter">
