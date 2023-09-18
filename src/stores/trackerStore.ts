@@ -59,5 +59,14 @@ export const useTrackerStore = defineStore('tracker', () => {
     }
   }
 
-  return { getClickInfo, incrementClickCount, decrementClickCount, maxClickCount, numItems, seed, shuffleItems, clearTracker }
+  return {
+    getClickInfo,
+    incrementClickCount,
+    decrementClickCount,
+    maxClickCount,
+    numItems,
+    seed,
+    shuffleItems,
+    clearTracker,
+  }
 })

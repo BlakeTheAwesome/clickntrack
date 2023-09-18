@@ -28,7 +28,9 @@ const trackerState = computed(() => (itemId.value === null ? null : trackerStore
 
 const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
 
-const overlayCol = computed(() => layoutStore.highlightCoversImage && trackerState.value?.count ? `${trackerState.value?.colour}77` : 'transparent' )
+const overlayCol = computed(() =>
+  layoutStore.highlightCoversImage && trackerState.value?.count ? `${trackerState.value?.colour}77` : 'transparent',
+)
 
 const filterOverlayCol = computed(() => (props.item && props.filtered ? 'rgba(0, 0, 0, 0.5)' : 'transparent'))
 
@@ -44,17 +46,69 @@ function onRightClick() {
   }
 }
 
-const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()}`);
-const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both');
-const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both');
-const textColor = computed(() => `#${layoutStore.itemTextColor}`);
-const tooltip = computed(() => layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null);
+const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()}`)
+const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both')
+const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both')
+const textColor = computed(() => `#${layoutStore.itemTextColor}`)
+const tooltip = computed(() =>
+  layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null,
+)
+const textAlign = computed(() => {
+  switch (layoutStore.textLocation) {
+    case 'TL':
+    case 'TC':
+    case 'TR':
+      return 'start'
+    case 'CL':
+    case 'CC':
+    case 'CR':
+      return 'center'
+    case 'BL':
+    case 'BC':
+    case 'BR':
+      return 'end'
+  }
+  throw new Error('Invalid text location')
+})
+const textJustify = computed(() => {
+  switch (layoutStore.textLocation) {
+    case 'TL':
+    case 'CL':
+    case 'BL':
+      return 'start'
+    case 'TC':
+    case 'CC':
+    case 'BC':
+      return 'center'
+    case 'TR':
+    case 'CR':
+    case 'BR':
+      return 'end'
+  }
+  throw new Error('Invalid text location')
+})
+const textMargins = computed(() => {
+  if (layoutStore.itemShape === 'Square') {
+    return '0'
+  }
+  return '25% 0'
+})
+
+const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
 </script>
 
 <template>
-  <div class="grid-icon" v-tooltip.bottom="tooltip" :class="layoutClass" @click="onLeftClick" @click.right.prevent="onRightClick">
+  <div
+    class="grid-icon"
+    v-tooltip.bottom="tooltip"
+    :class="layoutClass"
+    @click="onLeftClick"
+    @click.right.prevent="onRightClick"
+  >
     <template v-if="item !== null">
-      <img v-if="showImage" :src="item.img" :alt="item.displayName" />
+      <div class="gi-image-container">
+        <img v-if="showImage" :src="item.img" :alt="item.displayName" />
+      </div>
       <div v-if="showText" class="gi-text">{{ item.overlayText ?? item.displayName }}</div>
       <div class="overlay"></div>
       <div class="filter-overlay"></div>
@@ -76,30 +130,40 @@ const tooltip = computed(() => layoutStore.showTooltips && props.item !== null ?
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
 
-  & img {
-    grid-area: cell;
-    height: 100%;
-    width: 100%;
-    min-height: 0;
-    min-width: 0;
-    object-fit: contain;
-  }
+    & .gi-image-container {
+      grid-area: cell;
+      min-height: 0;
+      min-width: 0;
+      overflow: hidden;
+      
+      & img {
+        height: calc(100% - v-bind(imageMargins));
+        width: calc(100% - v-bind(imageMargins));
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: contain;
+      }
+    }
 
   & .gi-text {
     grid-area: cell;
-    place-self: center;
-    text-align: center;
+    align-self: v-bind(textAlign);
+    justify-self: v-bind(textJustify);
+    text-align: v-bind(textJustify);;
+    margin: v-bind(textMargins);
     font-weight: bold;
     color: v-bind(textColor);
     background-color: rgba(0, 0, 0, 0.5);
     word-break: break-word;
+    z-index: 100;
   }
 
   & .overlay {
     grid-area: cell;
     background-color: v-bind(overlayCol);
   }
-  
 
   & .filter-overlay {
     grid-area: cell;

@@ -15,7 +15,7 @@ import { shuffle } from '@/scripts/randomUtils'
 
 import pokemonList from '@/assets/pokemon-list.json'
 import sm64List from '@/assets/sm64-list.json'
-import type { TrackerItem } from '@/types/trackerItem';
+import type { TrackerItem } from '@/types/trackerItem'
 
 const trackerStore = useTrackerStore()
 const layoutStore = useLayoutStore()
@@ -25,7 +25,7 @@ const { cellSize, layout, itemShape, gridRowLength } = storeToRefs(layoutStore)
 const filter = ref('')
 
 const items = computed(() => {
-  const baseList: TrackerItem[] = sm64List;
+  const baseList: TrackerItem[] = sm64List
   if (trackerStore.shuffleItems) {
     return shuffle(baseList, trackerStore.seed).slice(0, trackerStore.numItems)
   } else {

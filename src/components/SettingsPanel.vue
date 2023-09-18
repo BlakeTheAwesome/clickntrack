@@ -7,11 +7,23 @@ import InputText from 'primevue/inputtext'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 
-import { useLayoutStore, Layouts, type Layout, ItemShapes, type ItemShape, DisplayTypes, type DisplayType } from '@/stores/layoutStore'
+import {
+  useLayoutStore,
+  Layouts,
+  type Layout,
+  ItemShapes,
+  type ItemShape,
+  DisplayTypes,
+  type DisplayType,
+  TextLocations,
+  type TextLocation,
+} from '@/stores/layoutStore'
 import { useTrackerStore } from '@/stores/trackerStore'
+
 const LayoutsMutable = Layouts as unknown as Layout[]
 const ItemShapesMutable = ItemShapes as unknown as ItemShape[]
 const DisplayTypesMutable = DisplayTypes as unknown as DisplayType[]
+const TextLocationsMutable = TextLocations as unknown as TextLocation[]
 
 const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
@@ -112,10 +124,31 @@ const trackerStore = useTrackerStore()
             />
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+            <span>Text Position:</span
+            ><Dropdown
+              class="sp-control"
+              v-model="layoutStore.textLocation"
+              :options="TextLocationsMutable"
+              placeholder="Select a shape"
+            />
+          </div>
+          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Text'">
+            Image Margin:
+            <InputNumber
+              class="sp-control"
+              v-model="layoutStore.imageMargin"
+              :min="-1000"
+              :max="1000"
+              mode="decimal"
+              showButtons
+            />
+          </div>
+          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
             <span>Image Text Color:</span><ColorPicker class="sp-control" v-model="layoutStore.itemTextColor" />
           </div>
-          <div class="sp-item-row" >
-            <span>Highlight Covers Image:</span><Checkbox class="sp-control" v-model="layoutStore.highlightCoversImage" :binary="true" />
+          <div class="sp-item-row">
+            <span>Highlight Covers Image:</span
+            ><Checkbox class="sp-control" v-model="layoutStore.highlightCoversImage" :binary="true" />
           </div>
         </div>
       </TabPanel>
