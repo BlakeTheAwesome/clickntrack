@@ -50,6 +50,9 @@ const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()
 const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both')
 const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both')
 const textColor = computed(() => `#${layoutStore.itemTextColor}`)
+const textBackgroundColor = computed(
+  () => `#${layoutStore.itemTextBackgroundColor}${layoutStore.itemTextBackgroundOpacity.toString(16)}`,
+)
 const tooltip = computed(() =>
   layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null,
 )
@@ -93,6 +96,7 @@ const textMargins = computed(() => {
   }
   return '25% 0'
 })
+const textSize = computed(() => `${layoutStore.textSize}px`)
 
 const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
 </script>
@@ -116,7 +120,7 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style lang="postcss">
 .grid-icon {
   display: grid;
   place-content: center;
@@ -130,33 +134,34 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
 
-    & .gi-image-container {
-      grid-area: cell;
-      min-height: 0;
-      min-width: 0;
-      overflow: hidden;
-      
-      & img {
-        height: calc(100% - v-bind(imageMargins));
-        width: calc(100% - v-bind(imageMargins));
-        position: relative;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        object-fit: contain;
-      }
+  & .gi-image-container {
+    grid-area: cell;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+
+    & img {
+      height: calc(100% - v-bind(imageMargins));
+      width: calc(100% - v-bind(imageMargins));
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: contain;
     }
+  }
 
   & .gi-text {
     grid-area: cell;
     align-self: v-bind(textAlign);
     justify-self: v-bind(textJustify);
-    text-align: v-bind(textJustify);;
+    text-align: v-bind(textJustify);
     margin: v-bind(textMargins);
     font-weight: bold;
     color: v-bind(textColor);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: v-bind(textBackgroundColor);
     word-break: break-word;
+    font-size: v-bind(textSize);
     z-index: 100;
   }
 

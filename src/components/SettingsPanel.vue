@@ -6,6 +6,7 @@ import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
+import Slider from 'primevue/slider'
 
 import {
   useLayoutStore,
@@ -69,7 +70,7 @@ const trackerStore = useTrackerStore()
               class="sp-control"
               v-model="layoutStore.cellSize"
               :min="1"
-              :max="100"
+              :max="1000"
               mode="decimal"
               showButtons
             />
@@ -115,8 +116,8 @@ const trackerStore = useTrackerStore()
             Shuffle Available Items: <Checkbox class="sp-control" v-model="trackerStore.shuffleItems" :binary="true" />
           </div>
           <div class="sp-item-row">
-            <span>Display Type:</span
-            ><Dropdown
+            <span>Display Type:</span>
+            <Dropdown
               class="sp-control"
               v-model="layoutStore.displayType"
               :options="DisplayTypesMutable"
@@ -124,12 +125,24 @@ const trackerStore = useTrackerStore()
             />
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
-            <span>Text Position:</span
-            ><Dropdown
+            <span>Text Position:</span>
+            <Dropdown
               class="sp-control"
               v-model="layoutStore.textLocation"
               :options="TextLocationsMutable"
               placeholder="Select a shape"
+            />
+          </div>
+          <div class="sp-item-row">
+            Text Size:
+            <InputNumber
+              v-if="layoutStore.displayType !== 'Image'"
+              class="sp-control"
+              v-model="layoutStore.textSize"
+              :min="1"
+              :max="100"
+              mode="decimal"
+              showButtons
             />
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Text'">
@@ -144,11 +157,20 @@ const trackerStore = useTrackerStore()
             />
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
-            <span>Image Text Color:</span><ColorPicker class="sp-control" v-model="layoutStore.itemTextColor" />
+            <span>Image Text Color:</span>
+            <ColorPicker class="sp-control" v-model="layoutStore.itemTextColor" />
+          </div>
+          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+            <span>Image Text Background Color:</span>
+            <ColorPicker class="sp-control" v-model="layoutStore.itemTextBackgroundColor" />
+          </div>
+          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+            <span>Background Opacity:</span>
+            <Slider class="sp-control" v-model="layoutStore.itemTextBackgroundOpacity" :min="0" :max="255" />
           </div>
           <div class="sp-item-row">
-            <span>Highlight Covers Image:</span
-            ><Checkbox class="sp-control" v-model="layoutStore.highlightCoversImage" :binary="true" />
+            <span>Highlight Covers Image:</span>
+            <Checkbox class="sp-control" v-model="layoutStore.highlightCoversImage" :binary="true" />
           </div>
         </div>
       </TabPanel>

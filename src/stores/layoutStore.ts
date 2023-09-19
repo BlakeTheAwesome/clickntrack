@@ -13,6 +13,8 @@ export type TextLocation = (typeof TextLocations)[number]
 export const useLayoutStore = defineStore('layout', () => {
   const bgColor = ref('#FFFFFF')
   const itemTextColor = ref('#000000')
+  const itemTextBackgroundColor = ref('#000000')
+  const itemTextBackgroundOpacity = ref(0.5)
   const cellSize = ref(48)
   const layout = ref<Layout>('Grid')
   const itemShape = ref<ItemShape>('Square')
@@ -21,11 +23,14 @@ export const useLayoutStore = defineStore('layout', () => {
   const gridRowLength = ref(10)
   const imageMargin = ref(0)
   const showTooltips = ref(true)
+  const textSize = ref(16)
   const highlightCoversImage = ref(false)
 
   return {
     bgColor,
     itemTextColor,
+    itemTextBackgroundColor,
+    itemTextBackgroundOpacity,
     cellSize,
     layout,
     itemShape,
@@ -35,5 +40,6 @@ export const useLayoutStore = defineStore('layout', () => {
     highlightCoversImage,
     textLocation,
     imageMargin,
+    textSize,
   }
 })
