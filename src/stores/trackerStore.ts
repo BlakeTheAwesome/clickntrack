@@ -2,7 +2,7 @@ import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 type ItemState = { clickCount: number }
-type IdState = Record<number, ItemState>
+type IdState = Map<number, ItemState>
 
 const defaultColours = [
   '#000000',
@@ -22,7 +22,7 @@ const defaultColours = [
 
 export const useTrackerStore = defineStore('tracker', () => {
   // TODO: Persist this idState
-  const idState = reactive<IdState>({})
+  const idState = reactive<IdState>(new Map())
   const maxClickCount = ref(2)
   const colours = reactive(defaultColours)
 
@@ -31,7 +31,7 @@ export const useTrackerStore = defineStore('tracker', () => {
   const shuffleItems = ref(false)
 
   function getClickInfo(id: number) {
-    const count = idState[id]?.clickCount ?? 0
+    const count = idState.get(id)?.clickCount ?? 0
     const colour = colours[count + 1] ?? '#000000'
     return {
       count,
@@ -40,23 +40,25 @@ export const useTrackerStore = defineStore('tracker', () => {
   }
 
   function incrementClickCount(id: number) {
-    if (!idState[id]) {
-      idState[id] = reactive({ clickCount: 0 })
+    let entry = idState.get(id);
+    if (!entry) {
+      entry = reactive({ clickCount: 0 });
+      idState.set(id, entry)
     }
-    idState[id].clickCount = Math.min(idState[id].clickCount + 1, maxClickCount.value)
+    entry.clickCount = Math.min(entry.clickCount + 1, maxClickCount.value)
   }
 
   function decrementClickCount(id: number) {
-    if (!idState[id]) {
-      idState[id] = reactive({ clickCount: 0 })
+    let entry = idState.get(id);
+    if (!entry) {
+      entry = reactive({ clickCount: 0 });
+      idState.set(id, entry)
     }
-    idState[id].clickCount = Math.max(idState[id].clickCount - 1, -1)
+    entry.clickCount = Math.max(entry.clickCount - 1, -1)
   }
 
   function clearTracker() {
-    for (const id in idState) {
-      idState[id].clickCount = 0
-    }
+    idState.forEach((state) => state.clickCount = 0);
   }
 
   return {
