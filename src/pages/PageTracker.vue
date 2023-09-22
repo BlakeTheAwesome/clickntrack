@@ -11,11 +11,6 @@ import SettingsPanelVue from '@/components/SettingsPanel.vue'
 
 import { useTrackerStore } from '@/stores/trackerStore'
 import { useLayoutStore } from '@/stores/layoutStore'
-import { shuffle } from '@/scripts/randomUtils'
-
-import pokemonList from '@/assets/pokemon-list.json'
-import sm64List from '@/assets/sm64-list.json'
-import type { TrackerItem } from '@/types/trackerItem'
 
 const trackerStore = useTrackerStore()
 const layoutStore = useLayoutStore()
@@ -23,16 +18,6 @@ const layoutStore = useLayoutStore()
 const { cellSize, layout, itemShape, gridRowLength } = storeToRefs(layoutStore)
 
 const filter = ref('')
-
-const items = computed(() => {
-  const baseList: TrackerItem[] = sm64List
-  if (trackerStore.shuffleItems) {
-    return shuffle(baseList, trackerStore.seed).slice(0, trackerStore.numItems)
-  } else {
-    const itemSelection = baseList.slice(0, trackerStore.numItems)
-    return shuffle(itemSelection, trackerStore.seed)
-  }
-})
 
 function onKey(event: KeyboardEvent) {
   const key = event.key
@@ -68,14 +53,14 @@ const contentPadding = computed(() => {
         <SplitterPanel :size="75" class="pt-content" tabindex="0" @keydown="onKey">
           <div class="pt-grid-area">
             <TrackerGrid
-              :gridItems="items"
+              :gridItems="trackerStore.gridItems"
               :gridRowLen="gridRowLength"
               :cellSize="cellSize"
               :layout="layout"
               :itemShape="itemShape"
               :filter="filter"
             />
-            <TrackerStatus :items="items" :filter="filter" />
+            <TrackerStatus :items="trackerStore.gridItems" :filter="filter" />
           </div>
         </SplitterPanel>
         <SplitterPanel v-if="showSettings" :size="25" :min-size="25">

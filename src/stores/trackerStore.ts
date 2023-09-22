@@ -1,6 +1,9 @@
 import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { ClickCountEntry } from '@/types/ClickCountEntry'
+import type { TrackerItem } from '@/types/trackerItem'
+import { shuffle } from '@/scripts/randomUtils'
+import pokemonList from '@/assets/pokemon-list.json'
 
 type ItemState = { clickCount: number }
 type IdState = Record<number, ItemState>
@@ -20,6 +23,17 @@ export const useTrackerStore = defineStore('tracker', () => {
   const numItems = ref(151)
   const seed = ref('')
   const shuffleItems = ref(false)
+
+  const allGridItems = ref<TrackerItem[]>(pokemonList)
+  const gridItems = computed(() => {
+    const baseList: TrackerItem[] = allGridItems.value
+    if (shuffleItems.value) {
+      return shuffle(baseList, seed.value).slice(0, numItems.value)
+    } else {
+      const itemSelection = baseList.slice(0, numItems.value)
+      return shuffle(itemSelection, seed.value)
+    }
+  })
 
   const minClickCount = computed(() => colours.value[0]?.id ?? 0)
   const maxClickCount = computed(() => colours.value.at(-1)?.id ?? 0)
@@ -62,15 +76,16 @@ export const useTrackerStore = defineStore('tracker', () => {
     entry.clickCount = Math.max(entry.clickCount - 1, minClickCount.value)
   }
 
-  function initTracker(itemIds: number[]) {
+  function initTracker(items: TrackerItem[]) {
+    allGridItems.value = structuredClone(items)
     clearTracker()
-    for (const id of itemIds) {
-      idState.value[id] = reactive({ clickCount: 0 })
-    }
   }
 
   function clearTracker() {
     idState.value = {}
+    for (const item of gridItems.value) {
+      idState.value[item.id] = reactive({ clickCount: 0 })
+    }
   }
 
   return {
@@ -85,5 +100,7 @@ export const useTrackerStore = defineStore('tracker', () => {
     initTracker,
     colours,
     totalCount,
+    gridItems,
+    allGridItems,
   }
 })
