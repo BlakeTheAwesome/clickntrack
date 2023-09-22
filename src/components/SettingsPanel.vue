@@ -20,6 +20,7 @@ import {
   type TextLocation,
 } from '@/stores/layoutStore'
 import { useTrackerStore } from '@/stores/trackerStore'
+import ClickCountEditor from './ClickCountEditor.vue'
 
 const LayoutsMutable = Layouts as unknown as Layout[]
 const ItemShapesMutable = ItemShapes as unknown as ItemShape[]
@@ -85,17 +86,7 @@ const trackerStore = useTrackerStore()
           <div class="sp-item-row">
             Show Tooltips: <Checkbox class="sp-control" v-model="layoutStore.showTooltips" :binary="true" />
           </div>
-          <div class="sp-item-row">
-            <span>Max Clicks:</span
-            ><InputNumber
-              class="sp-control"
-              v-model="trackerStore.maxClickCount"
-              :min="1"
-              :max="100"
-              mode="decimal"
-              showButtons
-            />
-          </div>
+          <ClickCountEditor v-model:items="trackerStore.colours" />
         </div>
       </TabPanel>
       <TabPanel header="Item Setup">

@@ -1,30 +1,18 @@
 <script setup lang="ts">
 import { useTrackerStore } from '@/stores/trackerStore'
 import type { TrackerItem } from '@/types/trackerItem'
-import { computed } from 'vue'
-
 const trackerStore = useTrackerStore()
 
-const props = defineProps<{
+defineProps<{
   items: TrackerItem[]
   filter: string
 }>()
-
-const totalCount = computed(() => {
-  let count = 0
-  for (const item of props.items) {
-    if (trackerStore.getClickInfo(item.id).count != 0) {
-      count++
-    }
-  }
-  return count
-})
 </script>
 
 <template>
   <div class="tracker-status">
     <span class="ts-filter">{{ filter }}</span>
-    <span class="ts-count">Total: {{ totalCount }}</span>
+    <span class="ts-count">Total: {{ trackerStore.totalCount }}</span>
   </div>
 </template>
 
