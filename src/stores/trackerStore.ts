@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import type { ClickCountEntry } from '@/types/ClickCountEntry'
 
 type ItemState = { clickCount: number }
-type IdState = Map<number, ItemState>
+type IdState = Record<number, ItemState>
 
 const defaultColours: ClickCountEntry[] = [
   { id: -1, color: '#000000', countsTowardsTotal: false },
@@ -14,7 +14,7 @@ const defaultColours: ClickCountEntry[] = [
 ]
 
 export const useTrackerStore = defineStore('tracker', () => {
-  const idState = ref<IdState>(new Map())
+  const idState = ref<IdState>({})
   const colours = ref(defaultColours)
 
   const numItems = ref(151)
@@ -27,7 +27,7 @@ export const useTrackerStore = defineStore('tracker', () => {
   const totalCount = computed(() => {
     const clickMap = clickCountMap.value
     let count = 0
-    for (const state of idState.value.values()) {
+    for (const state of Object.values(idState.value)) {
       const clickInfo = clickMap.get(state.clickCount)
       const increment = clickInfo?.countsTowardsTotal ? 1 : 0
       count += increment
@@ -36,7 +36,7 @@ export const useTrackerStore = defineStore('tracker', () => {
   })
 
   function getClickInfo(id: number) {
-    const count = idState.value.get(id)?.clickCount ?? 0
+    const count = idState.value[id]?.clickCount ?? 0
     const colour = clickCountMap.value.get(count)?.color ?? '#000000'
     return {
       count,
@@ -45,25 +45,32 @@ export const useTrackerStore = defineStore('tracker', () => {
   }
 
   function incrementClickCount(id: number) {
-    let entry = idState.value.get(id)
+    let entry = idState.value[id]
     if (!entry) {
       entry = reactive({ clickCount: 0 })
-      idState.value.set(id, entry)
+      idState.value[id] = entry
     }
     entry.clickCount = Math.min(entry.clickCount + 1, maxClickCount.value)
   }
 
   function decrementClickCount(id: number) {
-    let entry = idState.value.get(id)
+    let entry = idState.value[id]
     if (!entry) {
       entry = reactive({ clickCount: 0 })
-      idState.value.set(id, entry)
+      idState.value[id] = entry
     }
     entry.clickCount = Math.max(entry.clickCount - 1, minClickCount.value)
   }
 
+  function initTracker(itemIds: number[]) {
+    clearTracker()
+    for (const id of itemIds) {
+      idState.value[id] = reactive({ clickCount: 0 })
+    }
+  }
+
   function clearTracker() {
-    idState.value.forEach((state) => (state.clickCount = 0))
+    idState.value = {}
   }
 
   return {
@@ -75,6 +82,7 @@ export const useTrackerStore = defineStore('tracker', () => {
     seed,
     shuffleItems,
     clearTracker,
+    initTracker,
     colours,
     totalCount,
   }
