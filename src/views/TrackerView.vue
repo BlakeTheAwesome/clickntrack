@@ -3,7 +3,5 @@ import PageTracker from '@/pages/PageTracker.vue'
 </script>
 
 <template>
-  <main>
-    <PageTracker />
-  </main>
+  <PageTracker />
 </template>

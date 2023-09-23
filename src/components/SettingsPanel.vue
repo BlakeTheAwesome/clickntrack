@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
 import Button from 'primevue/button'
 import ColorPicker from 'primevue/colorpicker'
 import Checkbox from 'primevue/checkbox'
@@ -8,9 +10,6 @@ import InputText from 'primevue/inputtext'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import Slider from 'primevue/slider'
-import Menu from 'primevue/menu'
-import { ref } from 'vue'
-import { useFileDialog } from '@vueuse/core'
 
 import {
   useLayoutStore,
@@ -26,10 +25,6 @@ import {
 import { useTrackerStore } from '@/stores/trackerStore'
 import ClickCountEditor from './ClickCountEditor.vue'
 
-import pokemonList from '@/assets/pokemon-list.json'
-import sm64List from '@/assets/sm64-list.json'
-import bingoList from '@/assets/bingo-list.json'
-import type { TrackerItem } from '@/types/trackerItem'
 const LayoutsMutable = Layouts as unknown as Layout[]
 const ItemShapesMutable = ItemShapes as unknown as ItemShape[]
 const DisplayTypesMutable = DisplayTypes as unknown as DisplayType[]
@@ -37,48 +32,11 @@ const TextLocationsMutable = TextLocations as unknown as TextLocation[]
 
 const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
+const router = useRouter()
 
-const presetMenu = ref<Menu>()
-function togglePresetMenu(event: Event) {
-  presetMenu.value?.toggle(event)
+function openItemEditor() {
+  router.push({ name: 'editor' })
 }
-
-function loadPreset(preset: TrackerItem[]) {
-  trackerStore.initTracker(preset)
-}
-
-const presetFileDialog = useFileDialog({ accept: '.json', multiple: false })
-async function parseJsonFile(file: File): Promise<TrackerItem[]> {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader()
-    fileReader.onload = (event) => {
-      if (!event.target?.result) {
-        reject('No file target')
-        return
-      }
-
-      // TODO: Validation
-      resolve(JSON.parse(event.target.result as string) as TrackerItem[])
-    }
-    fileReader.onerror = (error) => reject(error)
-    fileReader.readAsText(file)
-  })
-}
-
-presetFileDialog.onChange(async (files) => {
-  if (files) {
-    const file = files[0]
-    const json = await parseJsonFile(file)
-    loadPreset(json)
-  }
-})
-
-const gridPresets = [
-  { label: 'Pokemon', command: () => loadPreset(pokemonList) },
-  { label: 'SM64', command: () => loadPreset(sm64List) },
-  { label: 'Bingo', command: () => loadPreset(bingoList) },
-  { label: 'From File...', command: () => presetFileDialog.open() },
-]
 </script>
 
 <template>
@@ -141,14 +99,9 @@ const gridPresets = [
       </TabPanel>
       <TabPanel header="Item Setup">
         <div class="sp-tab-content">
-          <Button
-            type="button"
-            label="Load Item Set"
-            @click="togglePresetMenu"
-            aria-haspopup="true"
-            aria-controls="overlay_menu"
-          />
-          <Menu ref="presetMenu" id="overlay_menu" :model="gridPresets" :popup="true" />
+          <div class="sp-item-row">
+            <Button type="button" label="Open Item Set Editor" @click="openItemEditor" />
+          </div>
           <div class="sp-item-row">
             Item Count:
             <InputNumber

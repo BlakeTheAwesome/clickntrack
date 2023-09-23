@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import Button from 'primevue/button'
 import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
 
@@ -46,7 +47,30 @@ const contentPadding = computed(() => {
 <template>
   <div class="page-tracker">
     <div class="pt-header">
-      <HeaderBar @toggleSettings="toggleSettings" @clear="trackerStore.clearTracker" />
+      <HeaderBar>
+        <template #actions>
+          <Button
+            v-tooltip.bottom="'Clear'"
+            icon="pi pi-ban"
+            severity="secondary"
+            text
+            raised
+            rounded
+            aria-label="Clear"
+            @click="trackerStore.clearTracker"
+          />
+          <Button
+            v-tooltip.bottom="'Settings'"
+            icon="pi pi-cog"
+            severity="secondary"
+            text
+            raised
+            rounded
+            aria-label="Toggle Settings"
+            @click="toggleSettings"
+          />
+        </template>
+      </HeaderBar>
     </div>
     <div>
       <Splitter class="pt-splitter">

@@ -168,11 +168,13 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
   & .overlay {
     grid-area: cell;
     background-color: v-bind(overlayCol);
+    z-index: 99;
   }
 
   & .filter-overlay {
     grid-area: cell;
     background-color: v-bind(filterOverlayCol);
+    z-index: 101;
   }
 }
 </style>
