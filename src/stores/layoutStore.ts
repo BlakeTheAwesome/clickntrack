@@ -12,9 +12,9 @@ export type TextLocation = (typeof TextLocations)[number]
 
 export const useLayoutStore = defineStore('layout', () => {
   const bgColor = ref('#FFFFFF')
-  const itemTextColor = ref('#000000')
+  const itemTextColor = ref('#ffffff')
   const itemTextBackgroundColor = ref('#000000')
-  const itemTextBackgroundOpacity = ref(0.5)
+  const itemTextBackgroundOpacityByte = ref(200)
   const cellSize = ref(48)
   const layout = ref<Layout>('Grid')
   const itemShape = ref<ItemShape>('Square')
@@ -30,7 +30,7 @@ export const useLayoutStore = defineStore('layout', () => {
     bgColor,
     itemTextColor,
     itemTextBackgroundColor,
-    itemTextBackgroundOpacity,
+    itemTextBackgroundOpacityByte,
     cellSize,
     layout,
     itemShape,

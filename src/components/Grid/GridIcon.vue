@@ -49,9 +49,9 @@ function onRightClick() {
 const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()}`)
 const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both')
 const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both')
-const textColor = computed(() => `#${layoutStore.itemTextColor}`)
+const textColor = computed(() => layoutStore.itemTextColor)
 const textBackgroundColor = computed(
-  () => `#${layoutStore.itemTextBackgroundColor}${layoutStore.itemTextBackgroundOpacity.toString(16)}`,
+  () => `${layoutStore.itemTextBackgroundColor}${layoutStore.itemTextBackgroundOpacityByte.toString(16)}`,
 )
 const tooltip = computed(() =>
   layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null,
@@ -163,6 +163,7 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
     word-break: break-word;
     font-size: v-bind(textSize);
     z-index: 100;
+    padding-inline: 2px;
   }
 
   & .overlay {

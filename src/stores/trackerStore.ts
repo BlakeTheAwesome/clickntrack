@@ -10,7 +10,7 @@ type IdState = Record<number, ItemState>
 
 const defaultColours: ClickCountEntry[] = [
   { id: -1, color: '#000000', countsTowardsTotal: false },
-  { id: 0, color: '#cccccc', countsTowardsTotal: true },
+  { id: 0, color: '#cccccc', countsTowardsTotal: false },
   { id: 1, color: '#3366E6', countsTowardsTotal: true },
   { id: 2, color: '#FF6633', countsTowardsTotal: true },
   { id: 3, color: '#66B399', countsTowardsTotal: true },

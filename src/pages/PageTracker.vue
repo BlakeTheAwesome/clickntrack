@@ -36,7 +36,7 @@ function toggleSettings() {
   showSettings.value = !showSettings.value
 }
 
-const bgColor = computed(() => `#${layoutStore.bgColor}`)
+const bgColor = computed(() => layoutStore.bgColor)
 const contentPadding = computed(() => {
   const minPadding = 16
   const padding = Math.max(minPadding, cellSize.value)

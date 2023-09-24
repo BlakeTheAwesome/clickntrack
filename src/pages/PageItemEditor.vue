@@ -224,7 +224,7 @@ function updateIds() {
 function returnToHome() {
   const callback = () => router.push({ name: 'tracker' })
 
-  if (!isModified.value) {
+  if (!isModified.value && editingRows.value.length === 0) {
     callback()
     return
   }
@@ -419,5 +419,13 @@ const newKeyword = ref('')
   grid: 'input button' 1fr / 1fr auto;
   gap: 0.5rem;
   padding: 0.5rem;
+}
+
+.pie-error {
+  color: #922;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 </style>

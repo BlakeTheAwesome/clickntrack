@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import Button from 'primevue/button'
@@ -37,6 +38,27 @@ const router = useRouter()
 function openItemEditor() {
   router.push({ name: 'editor' })
 }
+
+const bgColor = computed({
+  get: () => layoutStore.bgColor.substring(1),
+  set: (col) => {
+    layoutStore.bgColor = `#${col}`
+  },
+})
+
+const itemTextColor = computed({
+  get: () => layoutStore.itemTextColor.substring(1),
+  set: (col) => {
+    layoutStore.itemTextColor = `#${col}`
+  },
+})
+
+const itemTextBgColor = computed({
+  get: () => layoutStore.itemTextBackgroundColor.substring(1),
+  set: (col) => {
+    layoutStore.itemTextBackgroundColor = `#${col}`
+  },
+})
 </script>
 
 <template>
@@ -89,7 +111,7 @@ function openItemEditor() {
       <TabPanel header="Display">
         <div class="sp-tab-content">
           <div class="sp-item-row">
-            <span>Background Color:</span><ColorPicker class="sp-control" v-model="layoutStore.bgColor" />
+            <span>Background Color:</span><ColorPicker class="sp-control" v-model="bgColor" />
           </div>
           <div class="sp-item-row">
             Show Tooltips: <Checkbox class="sp-control" v-model="layoutStore.showTooltips" :binary="true" />
@@ -160,15 +182,15 @@ function openItemEditor() {
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
             <span>Image Text Color:</span>
-            <ColorPicker class="sp-control" v-model="layoutStore.itemTextColor" />
+            <ColorPicker class="sp-control" v-model="itemTextColor" />
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
             <span>Image Text Background Color:</span>
-            <ColorPicker class="sp-control" v-model="layoutStore.itemTextBackgroundColor" />
+            <ColorPicker class="sp-control" v-model="itemTextBgColor" />
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
             <span>Background Opacity:</span>
-            <Slider class="sp-control" v-model="layoutStore.itemTextBackgroundOpacity" :min="0" :max="255" />
+            <Slider class="sp-control" v-model="layoutStore.itemTextBackgroundOpacityByte" :min="0" :max="255" />
           </div>
           <div class="sp-item-row">
             <span>Highlight Covers Image:</span>

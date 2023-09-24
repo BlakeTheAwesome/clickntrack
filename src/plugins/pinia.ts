@@ -6,7 +6,7 @@ export function installPinia(app: App) {
   const pinia = createPinia()
   pinia.use(
     createPersistedState({
-      key: (storeName) => `pinia-${storeName}`,
+      key: (storeName) => `clickntrack-pinia-${storeName}`,
       auto: true,
     }),
   )
