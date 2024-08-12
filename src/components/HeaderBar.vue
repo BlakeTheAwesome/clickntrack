@@ -5,9 +5,9 @@ const githubLink = 'https://github.com/BlakeTheAwesome/clickntrack'
 
 <template>
   <div class="header-bar">
-    <span class="hb-title">Click N Track</span>
+    <span class="hb-title font-comic">Click N Track</span>
     <div class="hb-controls">
-      <span class="hb-author">By MutantSheepdog</span>
+      <span class="hb-author font-signature">By MutantSheepdog</span>
       <slot name="actions"></slot>
       <a :href="githubLink" v-tooltip.bottom="'GitHub'">
         <Button icon="pi pi-github" severity="secondary" text raised rounded aria-label="GitHub" />
@@ -28,12 +28,11 @@ const githubLink = 'https://github.com/BlakeTheAwesome/clickntrack'
 .hb-title {
   font-size: 1.5rem;
   font-weight: bold;
-  font-family: 'Brush Script MT', cursive;
 }
 
 .hb-author {
-  font-size: 1rem;
-  font-family: 'Brush Script MT', cursive;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #666;
 }
 

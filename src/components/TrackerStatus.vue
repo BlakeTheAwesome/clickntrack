@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="tracker-status">
+  <div class="tracker-status font-comic">
     <span class="ts-filter">{{ filter }}</span>
     <span class="ts-count">Total: {{ trackerStore.totalCount }}</span>
   </div>
@@ -18,7 +18,6 @@ defineProps<{
 
 <style scoped lang="postcss">
 .tracker-status {
-  font-family: 'Brush Script MT', cursive;
   font-size: 1.5rem;
   display: flex;
   flex-direction: row;
