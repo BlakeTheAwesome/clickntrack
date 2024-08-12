@@ -4,23 +4,26 @@ import { useRouter } from 'vue-router'
 import { useFileDialog } from '@vueuse/core'
 
 import Button from 'primevue/button'
+import Column from 'primevue/column'
+import ConfirmDialog from 'primevue/confirmdialog'
+import DataTable, { type DataTableRowEditSaveEvent } from 'primevue/datatable'
+import Menu from 'primevue/menu'
 import MultiSelect from 'primevue/multiselect'
 import InputText from 'primevue/inputtext'
-import DataTable, { type DataTableRowEditSaveEvent } from 'primevue/datatable'
-import Column from 'primevue/column'
-import Menu from 'primevue/menu'
-import ConfirmDialog from 'primevue/confirmdialog'
+import Toast from 'primevue/toast'
 import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 
 import { useTrackerStore } from '@/stores/trackerStore'
-
 import type { TrackerItem } from '@/types/trackerItem'
 
 import pokemonList from '@/assets/pokemon-list.json'
 import sm64List from '@/assets/sm64-list.json'
 import bingoList from '@/assets/bingo-list.json'
+
+const toast = useToast()
 
 const trackerStore = useTrackerStore()
 const savedItems = computed(() => trackerStore.allGridItems)
@@ -69,8 +72,11 @@ async function parseJsonFile(file: File): Promise<TrackerItem[]> {
         return
       }
 
-      // TODO: Validation
-      resolve(JSON.parse(event.target.result as string) as TrackerItem[])
+      try {
+        resolve(JSON.parse(event.target.result as string) as TrackerItem[])
+      } catch (err) {
+        reject(err)
+      }
     }
     fileReader.onerror = (error) => reject(error)
     fileReader.readAsText(file)
@@ -78,10 +84,21 @@ async function parseJsonFile(file: File): Promise<TrackerItem[]> {
 }
 
 presetFileDialog.onChange(async (files) => {
-  if (files) {
-    const file = files[0]
-    const json = await parseJsonFile(file)
-    loadPreset(json)
+  try {
+    if (files) {
+      const file = files[0]
+      const json = await parseJsonFile(file)
+      loadPreset(json)
+    }
+  } catch (err) {
+    toast.add({
+      severity: 'error',
+      closable: true,
+      life: 5000,
+      summary: 'Error Loading Json',
+      detail: `${err}`,
+    })
+    console.error(err)
   }
 })
 
@@ -245,6 +262,7 @@ const newKeyword = ref('')
 <template>
   <div class="page-item-editor">
     <ConfirmDialog />
+    <Toast />
     <div class="pie-header">
       <HeaderBar>
         <template #actions>
