@@ -1,5 +1,9 @@
 @import './primevue.css';
 
+:root {
+  --default-font: 'Open Sans', sans-serif;
+}
+
 html,
 body,
 main,
@@ -7,4 +11,13 @@ main,
   margin: 0;
   padding: 0;
   height: 100vh;
+  font-family: var(--default-font);
+}
+
+.font-signature {
+  font-family: 'Whisper', cursive;
+}
+
+.font-comic {
+  font-family: 'Bangers', system-ui;
 }
