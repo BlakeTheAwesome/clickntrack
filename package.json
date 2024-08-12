@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "stories": "histoire dev"
   },
   "dependencies": {
     "@vueuse/core": "^10.7.2",
@@ -24,6 +25,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@histoire/plugin-vue": "^0.17.17",
     "@rushstack/eslint-patch": "^1.7.2",
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^18.19.11",
@@ -33,6 +35,7 @@
     "@vue/tsconfig": "^0.5.1",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.21.0",
+    "histoire": "^0.17.17",
     "npm-run-all": "^4.1.5",
     "postcss-nesting": "^12.0.2",
     "prettier": "^3.2.4",
