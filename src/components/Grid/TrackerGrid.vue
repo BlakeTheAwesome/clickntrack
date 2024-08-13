@@ -8,7 +8,7 @@ const layoutStore = useLayoutStore()
 
 // Add a 'search key' prop here
 const props = defineProps<{
-  gridItems: TrackerItem[]
+  gridItems: ReadonlyArray<TrackerItem>
   gridRowLen: number
   cellSize: number
   filter?: string

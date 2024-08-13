@@ -1,4 +1,5 @@
 import type { TrackerItem } from '@/types/trackerItem'
+import { ref } from 'vue'
 
 function stringInKeywords(strToMatch: string, keywords: string[]): boolean {
   for (const keyword of keywords) {
@@ -21,7 +22,7 @@ function itemMatchesFilters(item: TrackerItem, namesToMatch: string[], keywordsT
   return true
 }
 
-export function getIdsToFilterOut(filter: string, itemList: Array<TrackerItem>): Set<number> {
+export function getIdsToFilterOut(filter: string, itemList: ReadonlyArray<TrackerItem>): Set<number> {
   if (filter === '') {
     return new Set<number>()
   }
@@ -44,4 +45,23 @@ export function getIdsToFilterOut(filter: string, itemList: Array<TrackerItem>):
     }
   }
   return idsToFilterOut
+}
+
+export function useKeyboardFilter() {
+  const filter = ref('')
+  const onKeydown = (event: KeyboardEvent) => {
+    const key = event.key
+    if (key.length == 1) {
+      filter.value += key
+    } else if (key == 'Backspace') {
+      filter.value = filter.value.slice(0, -1)
+    } else if (key == 'Escape') {
+      filter.value = ''
+    }
+  }
+
+  return {
+    filter,
+    onKeydown,
+  }
 }
