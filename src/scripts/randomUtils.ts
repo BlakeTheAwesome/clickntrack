@@ -1,6 +1,6 @@
 import Rand from 'rand-seed'
 
-export function shuffle<T>(arr: Array<T>, seed: string): Array<T> {
+export function shuffle<T>(arr: readonly T[], seed: string): T[] {
   const ret = [...arr]
 
   if (seed === '') {

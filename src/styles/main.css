@@ -12,6 +12,7 @@ main,
   padding: 0;
   height: 100vh;
   font-family: var(--default-font);
+  background-color: white;
 }
 
 .font-signature {

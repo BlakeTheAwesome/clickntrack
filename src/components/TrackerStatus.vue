@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useTrackerStore } from '@/stores/trackerStore'
-import type { TrackerItem } from '@/types/trackerItem'
 const trackerStore = useTrackerStore()
 
 defineProps<{
-  items: TrackerItem[]
   filter: string
 }>()
 </script>

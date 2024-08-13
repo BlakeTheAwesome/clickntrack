@@ -11,7 +11,7 @@ import './styles/main.css'
 
 const app = createApp(App)
 
-installPinia(app)
+installPinia(app, true)
 installPrimeVue(app)
 app.use(router)
 
