@@ -18,7 +18,7 @@ const router = useRouter()
 const trackerStore = useTrackerStore()
 const layoutStore = useLayoutStore()
 
-const { cellSize, layout, itemShape, gridRowLength } = storeToRefs(layoutStore)
+const { cellSize, layout, gridRowLength } = storeToRefs(layoutStore)
 
 const filter = ref('')
 
@@ -87,10 +87,9 @@ function openItemEditor() {
               :gridRowLen="gridRowLength"
               :cellSize="cellSize"
               :layout="layout"
-              :itemShape="itemShape"
               :filter="filter"
             />
-            <TrackerStatus :items="trackerStore.gridItems" :filter="filter" />
+            <TrackerStatus :filter="filter" />
           </div>
         </SplitterPanel>
         <SplitterPanel v-if="showSettings" :size="25" :min-size="25">
