@@ -1,8 +1,10 @@
 # Standardise on unix line endings
-text eol=lf
+* text=auto eol=lf
 
 *.json text
 *.css text
 *.vue text
 *.ts text
+*.md text
+*.svg text
 .gitattributes text
