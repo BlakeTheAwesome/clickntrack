@@ -22,7 +22,7 @@ function itemMatchesFilters(item: TrackerItem, namesToMatch: string[], keywordsT
   return true
 }
 
-export function getIdsToFilterOut(filter: string, itemList: ReadonlyArray<TrackerItem>): Set<number> {
+export function getIdsToFilterOut(filter: string, itemList: readonly TrackerItem[]): Set<number> {
   if (filter === '') {
     return new Set<number>()
   }

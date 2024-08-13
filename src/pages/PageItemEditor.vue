@@ -19,7 +19,7 @@ const presets = [
   { label: 'Bingo', items: bingoList },
 ] as const
 
-function exportJson(items: TrackerItem[]) {
+function exportJson(items: readonly TrackerItem[]) {
   const dataStr = JSON.stringify(items, null, 2)
   const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
   const exportFileDefaultName = 'data.json'

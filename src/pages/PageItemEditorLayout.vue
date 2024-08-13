@@ -18,14 +18,14 @@ import HeaderBar from '@/components/HeaderBar.vue'
 import type { TrackerItem } from '@/types/trackerItem'
 
 const props = defineProps<{
-  gridItems: TrackerItem[]
-  presets: ReadonlyArray<{ label: string; items: ReadonlyArray<TrackerItem> }>
+  gridItems: readonly TrackerItem[]
+  presets: ReadonlyArray<{ label: string; items: readonly TrackerItem[] }>
 }>()
 
 const emit = defineEmits<{
   'update:gridItems': [items: TrackerItem[]]
-  'init-tracker': [items: ReadonlyArray<TrackerItem>]
-  'export-items': [items: ReadonlyArray<TrackerItem>]
+  'init-tracker': [items: readonly TrackerItem[]]
+  'export-items': [items: readonly TrackerItem[]]
   'return-home': []
 }>()
 
@@ -49,7 +49,7 @@ function togglePresetMenu(event: Event) {
   presetMenu.value?.toggle(event)
 }
 
-function loadPreset(preset: ReadonlyArray<TrackerItem>) {
+function loadPreset(preset: readonly TrackerItem[]) {
   confirmDialog.require({
     message: 'Are you sure you want to load this preset?\nConsider exporting your current item set before continuing.',
     header: 'Loading Preset',
@@ -188,7 +188,7 @@ const availableKeywords = computed<string[]>(() => {
       usedKeywords.add(keywords)
     }
   }
-  return new Array<string>(...usedKeywords.values())
+  return [...usedKeywords.values()]
 })
 
 const errorMessage = computed(() => {

@@ -15,7 +15,7 @@ import type { TrackerItem } from '@/types/trackerItem'
 import { useKeyboardFilter } from '@/scripts/filterUtils'
 
 const props = defineProps<{
-  gridItems: ReadonlyArray<TrackerItem>
+  gridItems: readonly TrackerItem[]
 }>()
 
 const emit = defineEmits<{

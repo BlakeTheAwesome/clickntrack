@@ -76,8 +76,8 @@ export const useTrackerStore = defineStore('tracker', () => {
     entry.clickCount = Math.max(entry.clickCount - 1, minClickCount.value)
   }
 
-  function initTracker(items: TrackerItem[]) {
-    allGridItems.value = structuredClone(items)
+  function initTracker(items: readonly TrackerItem[]) {
+    allGridItems.value = structuredClone(items) as TrackerItem[]
     clearTracker()
   }
 
