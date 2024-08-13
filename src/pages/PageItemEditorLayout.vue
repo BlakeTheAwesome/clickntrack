@@ -44,7 +44,7 @@ function setMutableItemsToDefault() {
 }
 watchEffect(setMutableItemsToDefault)
 
-const presetMenu = ref<Menu>()
+const presetMenu = ref<InstanceType<typeof Menu>>()
 function togglePresetMenu(event: Event) {
   presetMenu.value?.toggle(event)
 }
@@ -335,6 +335,7 @@ const newKeyword = ref('')
         </Column>
         <Column header="Keywords">
           <template #editor="slotProps">
+            <!-- Display=chip is broken -->
             <MultiSelect
               v-model="slotProps.data.keywords"
               display="chip"

@@ -4,12 +4,14 @@ import { computed } from 'vue'
 import Button from 'primevue/button'
 import ColorPicker from 'primevue/colorpicker'
 import Checkbox from 'primevue/checkbox'
-import Dropdown from 'primevue/dropdown'
+import Select from 'primevue/select'
 import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import Slider from 'primevue/slider'
+
+// TODO: Replace tabview with new tabs component
 
 import {
   useLayoutStore,
@@ -70,7 +72,7 @@ const itemTextBgColor = computed({
         <div class="sp-tab-content">
           <div class="sp-item-row">
             <span>Layout:</span
-            ><Dropdown
+            ><Select
               class="sp-control"
               v-model="layoutStore.layout"
               :options="LayoutsMutable"
@@ -90,7 +92,7 @@ const itemTextBgColor = computed({
           </div>
           <div class="sp-item-row">
             <span>Item Shape:</span
-            ><Dropdown
+            ><Select
               class="sp-control"
               v-model="layoutStore.itemShape"
               :options="ItemShapesMutable"
@@ -143,7 +145,7 @@ const itemTextBgColor = computed({
           </div>
           <div class="sp-item-row">
             <span>Display Type:</span>
-            <Dropdown
+            <Select
               class="sp-control"
               v-model="layoutStore.displayType"
               :options="DisplayTypesMutable"
@@ -152,17 +154,16 @@ const itemTextBgColor = computed({
           </div>
           <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
             <span>Text Position:</span>
-            <Dropdown
+            <Select
               class="sp-control"
               v-model="layoutStore.textLocation"
               :options="TextLocationsMutable"
               placeholder="Select a shape"
             />
           </div>
-          <div class="sp-item-row">
+          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
             Text Size:
             <InputNumber
-              v-if="layoutStore.displayType !== 'Image'"
               class="sp-control"
               v-model="layoutStore.textSize"
               :min="1"

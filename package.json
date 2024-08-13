@@ -14,11 +14,12 @@
     "stories": "histoire dev"
   },
   "dependencies": {
+    "@primevue/themes": "^4.0.4",
     "@vueuse/core": "^10.7.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "primeicons": "^6.0.1",
-    "primevue": "^3.47.2",
+    "primevue": "^4.0.4",
     "rand-seed": "^1.0.2",
     "seedrandom": "^3.0.5",
     "vue": "^3.4.15",

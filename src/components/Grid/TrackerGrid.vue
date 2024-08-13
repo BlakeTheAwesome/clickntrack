@@ -184,7 +184,7 @@ const margins = computed(() => {
 
 <template>
   <div :class="`tracker-grid layout-${layout.toLowerCase()}`">
-    <div :class="`pt-grid layout-${layout.toLowerCase()}`" @click.right.prevent="">
+    <div :class="`tg-grid layout-${layout.toLowerCase()}`" @click.right.prevent="">
       <template v-for="(row, rowIdx) in rows" :key="rowIdx">
         <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
           <GridIcon
@@ -203,7 +203,7 @@ const margins = computed(() => {
   width: min-content;
   margin: v-bind(margins);
 }
-.pt-grid {
+.tg-grid {
   display: grid;
   grid-template-columns: repeat(v-bind(rowLen), v-bind(cellSizeStr));
   grid-auto-rows: v-bind(cellSizeStr);

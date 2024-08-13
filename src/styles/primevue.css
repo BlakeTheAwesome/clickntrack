@@ -1,6 +1,12 @@
-@import 'primevue/resources/themes/lara-light-indigo/theme.css';
 @import 'primeicons/primeicons.css';
+
+// These !importants should be removable by settings the css layer in primevue.ts, but that breaks histoire with
+// its old CSS parser
 
 .p-tooltip-text {
   word-break: normal !important;
+}
+
+.p-colorpicker-preview {
+  border: 1px solid var(--p-inputtext-border-color) !important;
 }
