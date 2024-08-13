@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
@@ -8,11 +9,12 @@ import SplitterPanel from 'primevue/splitterpanel'
 import TrackerGrid from '@/components/Grid/TrackerGrid.vue'
 import TrackerStatus from '@/components/TrackerStatus.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
-import SettingsPanelVue from '@/components/SettingsPanel.vue'
+import SettingsPanel from '@/components/SettingsPanel.vue'
 
 import { useTrackerStore } from '@/stores/trackerStore'
 import { useLayoutStore } from '@/stores/layoutStore'
 
+const router = useRouter()
 const trackerStore = useTrackerStore()
 const layoutStore = useLayoutStore()
 
@@ -42,6 +44,10 @@ const contentPadding = computed(() => {
   const padding = Math.max(minPadding, cellSize.value)
   return `${padding}px ${padding}px ${minPadding}px ${padding}px`
 })
+
+function openItemEditor() {
+  router.push({ name: 'editor' })
+}
 </script>
 
 <template>
@@ -88,7 +94,7 @@ const contentPadding = computed(() => {
           </div>
         </SplitterPanel>
         <SplitterPanel v-if="showSettings" :size="25" :min-size="25">
-          <SettingsPanelVue class="pt-settings" />
+          <SettingsPanel class="pt-settings" @open-item-set-editor="openItemEditor" />
         </SplitterPanel>
       </Splitter>
     </div>

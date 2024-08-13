@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 
 import Button from 'primevue/button'
 import ColorPicker from 'primevue/colorpicker'
@@ -26,6 +25,10 @@ import {
 import { useTrackerStore } from '@/stores/trackerStore'
 import ClickCountEditor from './ClickCountEditor.vue'
 
+const emit = defineEmits<{
+  'open-item-set-editor': []
+}>()
+
 const LayoutsMutable = Layouts as unknown as Layout[]
 const ItemShapesMutable = ItemShapes as unknown as ItemShape[]
 const DisplayTypesMutable = DisplayTypes as unknown as DisplayType[]
@@ -33,10 +36,9 @@ const TextLocationsMutable = TextLocations as unknown as TextLocation[]
 
 const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
-const router = useRouter()
 
 function openItemEditor() {
-  router.push({ name: 'editor' })
+  emit('open-item-set-editor')
 }
 
 const bgColor = computed({
