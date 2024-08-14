@@ -74,9 +74,9 @@ const contentPadding = computed(() => {
         <SplitterPanel :size="75" class="pt-content" tabindex="0" @keydown="onKeydown">
           <div class="pt-grid-area">
             <TrackerGrid
-              :gridItems="props.gridItems"
-              :gridRowLen="gridRowLength"
-              :cellSize="cellSize"
+              :grid-items="props.gridItems"
+              :grid-row-len="gridRowLength"
+              :cell-size="cellSize"
               :layout="layout"
               :filter="filter"
             />

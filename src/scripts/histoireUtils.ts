@@ -8,7 +8,7 @@ export function logEmits(storyComponent: Component) {
 
   const ret: Record<string, typeof logEvent> = {}
 
-  let emits = storyComponent.emits
+  let emits = storyComponent.emits as string[] | Record<string, unknown>
   if (!(emits instanceof Array)) {
     emits = Object.keys(emits)
   }

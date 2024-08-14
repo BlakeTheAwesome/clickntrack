@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { createRouter, createWebHashHistory } from 'vue-router'
 import TrackerView from '@/views/TrackerView.vue'
 import EditorView from '@/views/EditorView.vue'

@@ -8,8 +8,8 @@ const githubLink = 'https://github.com/BlakeTheAwesome/clickntrack'
     <span class="hb-title font-comic">Click N Track</span>
     <div class="hb-controls">
       <span class="hb-author font-signature">By MutantSheepdog</span>
-      <slot name="actions"></slot>
-      <a :href="githubLink" v-tooltip.bottom="'GitHub'">
+      <slot name="actions" />
+      <a v-tooltip.bottom="'GitHub'" :href="githubLink">
         <Button icon="pi pi-github" severity="secondary" text raised rounded aria-label="GitHub" />
       </a>
     </div>

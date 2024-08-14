@@ -71,43 +71,43 @@ const itemTextBgColor = computed({
       <TabPanel header="Board">
         <div class="sp-tab-content">
           <div class="sp-item-row">
-            <span>Layout:</span
-            ><Select
-              class="sp-control"
+            <span>Layout:</span>
+            <Select
               v-model="layoutStore.layout"
+              class="sp-control"
               :options="LayoutsMutable"
               placeholder="Select a layout"
             />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.layout === 'Grid'">
-            <span>Grid Row Length:</span
-            ><InputNumber
-              class="sp-control"
+          <div v-if="layoutStore.layout === 'Grid'" class="sp-item-row">
+            <span>Grid Row Length:</span>
+            <InputNumber
               v-model="layoutStore.gridRowLength"
+              class="sp-control"
               :min="1"
               :max="1000"
               mode="decimal"
-              showButtons
+              show-buttons
             />
           </div>
           <div class="sp-item-row">
-            <span>Item Shape:</span
-            ><Select
-              class="sp-control"
+            <span>Item Shape:</span>
+            <Select
               v-model="layoutStore.itemShape"
+              class="sp-control"
               :options="ItemShapesMutable"
               placeholder="Select a shape"
             />
           </div>
           <div class="sp-item-row">
-            <span>Item Size:</span
-            ><InputNumber
-              class="sp-control"
+            <span>Item Size:</span>
+            <InputNumber
               v-model="layoutStore.cellSize"
+              class="sp-control"
               :min="1"
               :max="1000"
               mode="decimal"
-              showButtons
+              show-buttons
             />
           </div>
         </div>
@@ -115,10 +115,11 @@ const itemTextBgColor = computed({
       <TabPanel header="Display">
         <div class="sp-tab-content">
           <div class="sp-item-row">
-            <span>Background Color:</span><ColorPicker class="sp-control" v-model="bgColor" />
+            <span>Background Color:</span>
+            <ColorPicker v-model="bgColor" class="sp-control" />
           </div>
           <div class="sp-item-row">
-            Show Tooltips: <Checkbox class="sp-control" v-model="layoutStore.showTooltips" :binary="true" />
+            Show Tooltips: <Checkbox v-model="layoutStore.showTooltips" class="sp-control" :binary="true" />
           </div>
           <ClickCountEditor v-model:items="trackerStore.colours" />
         </div>
@@ -131,73 +132,73 @@ const itemTextBgColor = computed({
           <div class="sp-item-row">
             Item Count:
             <InputNumber
-              class="sp-control"
               v-model="trackerStore.numItems"
+              class="sp-control"
               :min="1"
               :max="10000"
               mode="decimal"
-              showButtons
+              show-buttons
             />
           </div>
-          <div class="sp-item-row">Seed: <InputText class="sp-control" v-model="trackerStore.seed" /></div>
+          <div class="sp-item-row">Seed: <InputText v-model="trackerStore.seed" class="sp-control" /></div>
           <div class="sp-item-row">
-            Shuffle Available Items: <Checkbox class="sp-control" v-model="trackerStore.shuffleItems" :binary="true" />
+            Shuffle Available Items: <Checkbox v-model="trackerStore.shuffleItems" class="sp-control" :binary="true" />
           </div>
           <div class="sp-item-row">
             <span>Display Type:</span>
             <Select
-              class="sp-control"
               v-model="layoutStore.displayType"
+              class="sp-control"
               :options="DisplayTypesMutable"
               placeholder="Select a shape"
             />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+          <div v-if="layoutStore.displayType !== 'Image'" class="sp-item-row">
             <span>Text Position:</span>
             <Select
-              class="sp-control"
               v-model="layoutStore.textLocation"
+              class="sp-control"
               :options="TextLocationsMutable"
               placeholder="Select a shape"
             />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+          <div v-if="layoutStore.displayType !== 'Image'" class="sp-item-row">
             Text Size:
             <InputNumber
-              class="sp-control"
               v-model="layoutStore.textSize"
+              class="sp-control"
               :min="1"
               :max="100"
               mode="decimal"
-              showButtons
+              show-buttons
             />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Text'">
+          <div v-if="layoutStore.displayType !== 'Text'" class="sp-item-row">
             Image Margin:
             <InputNumber
-              class="sp-control"
               v-model="layoutStore.imageMargin"
+              class="sp-control"
               :min="-1000"
               :max="1000"
               mode="decimal"
-              showButtons
+              show-buttons
             />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+          <div v-if="layoutStore.displayType !== 'Image'" class="sp-item-row">
             <span>Image Text Color:</span>
-            <ColorPicker class="sp-control" v-model="itemTextColor" />
+            <ColorPicker v-model="itemTextColor" class="sp-control" />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+          <div v-if="layoutStore.displayType !== 'Image'" class="sp-item-row">
             <span>Image Text Background Color:</span>
-            <ColorPicker class="sp-control" v-model="itemTextBgColor" />
+            <ColorPicker v-model="itemTextBgColor" class="sp-control" />
           </div>
-          <div class="sp-item-row" v-if="layoutStore.displayType !== 'Image'">
+          <div v-if="layoutStore.displayType !== 'Image'" class="sp-item-row">
             <span>Background Opacity:</span>
-            <Slider class="sp-control" v-model="layoutStore.itemTextBackgroundOpacityByte" :min="0" :max="255" />
+            <Slider v-model="layoutStore.itemTextBackgroundOpacityByte" class="sp-control" :min="0" :max="255" />
           </div>
           <div class="sp-item-row">
             <span>Highlight Covers Image:</span>
-            <Checkbox class="sp-control" v-model="layoutStore.highlightCoversImage" :binary="true" />
+            <Checkbox v-model="layoutStore.highlightCoversImage" class="sp-control" :binary="true" />
           </div>
         </div>
       </TabPanel>

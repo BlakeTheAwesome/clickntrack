@@ -1,6 +1,6 @@
 // import './assets/main.css'
 
-import { createApp } from 'vue'
+import { createApp, type Component } from 'vue'
 
 import App from './App.vue'
 import router from './plugins/router'
@@ -9,7 +9,7 @@ import { installPinia } from './plugins/pinia'
 
 import './styles/main.css'
 
-const app = createApp(App)
+const app = createApp(App as Component)
 
 installPinia(app, true)
 installPrimeVue(app)

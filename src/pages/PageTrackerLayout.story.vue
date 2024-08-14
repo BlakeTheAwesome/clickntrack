@@ -9,6 +9,6 @@ const trackerStore = useTrackerStore()
 
 <template>
   <Story>
-    <StoryComponent v-on="logEmits(StoryComponent)" :grid-items="trackerStore.gridItems" />
+    <StoryComponent :grid-items="trackerStore.gridItems" v-on="logEmits(StoryComponent)" />
   </Story>
 </template>

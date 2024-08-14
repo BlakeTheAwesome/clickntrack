@@ -5,12 +5,14 @@ const layoutStore = useLayoutStore()
 const attrs = useAttrs()
 
 onBeforeMount(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const writableStore = layoutStore as Record<string, any>
   for (const [k, v] of Object.entries(attrs)) {
-    ;(layoutStore as any)[k] = v
+    writableStore[k] = v
   }
 })
 </script>
 
 <template>
-  <div class="set-layout-store"></div>
+  <div class="set-layout-store" />
 </template>

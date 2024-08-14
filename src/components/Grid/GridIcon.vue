@@ -103,8 +103,8 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
 
 <template>
   <div
-    class="grid-icon"
     v-tooltip.bottom="tooltip"
+    class="grid-icon"
     :class="layoutClass"
     @click="onLeftClick"
     @click.right.prevent="onRightClick"
@@ -113,9 +113,11 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
       <div class="gi-image-container">
         <img v-if="showImage" :src="item.img" :alt="item.displayName" />
       </div>
-      <div v-if="showText" class="gi-text">{{ item.overlayText ?? item.displayName }}</div>
-      <div class="overlay"></div>
-      <div class="filter-overlay"></div>
+      <div v-if="showText" class="gi-text">
+        {{ item.overlayText ?? item.displayName }}
+      </div>
+      <div class="overlay" />
+      <div class="filter-overlay" />
     </template>
   </div>
 </template>

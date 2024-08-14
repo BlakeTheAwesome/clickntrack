@@ -1,7 +1,8 @@
 @import 'primeicons/primeicons.css';
 
-// These !importants should be removable by settings the css layer in primevue.ts, but that breaks histoire with
-// its old CSS parser
+/* These !importants should be removable by settings the css layer in primevue.ts, but that breaks histoire with
+ * its old CSS parser
+ */
 
 .p-tooltip-text {
   word-break: normal !important;
