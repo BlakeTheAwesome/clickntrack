@@ -26,10 +26,12 @@ const filledRadius = computed(() => {
 
 const EmptyCell = Symbol('EmptyCell')
 
-const rows = computed(() => {
-  const placeholders = new Array(props.gridItems.length).fill(EmptyCell)
-  const rows: (TrackerItem | null)[][] = []
+type ItemRow = (TrackerItem | null)[]
+const rows = computed<ItemRow[]>(() => {
   if (props.layout === 'Hex') {
+    type PlaceholderItem = typeof EmptyCell | null
+    const placeholderRows: PlaceholderItem[][] = []
+    const placeholders = new Array<PlaceholderItem>(props.gridItems.length).fill(EmptyCell)
     let radius = filledRadius.value
 
     const numRows = radius * 2 - 1
@@ -38,18 +40,18 @@ const rows = computed(() => {
       let itemCount = radius
       itemCount += i < midRowIndex ? i : numRows - i - 1
       const items = placeholders.splice(0, itemCount)
-      rows.push(items)
+      placeholderRows.push(items)
     }
 
     // First fill on the right
     if (placeholders.length > 0) {
       radius++
-      const numToAdd = Math.min(rows.length, placeholders.length)
+      const numToAdd = Math.min(placeholderRows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        rows[i].push(placeholders.shift() as TrackerItem)
+        placeholderRows[i].push(placeholders.shift() as PlaceholderItem)
       }
-      for (let i = numToAdd; i < rows.length; i++) {
-        rows[i].push(null)
+      for (let i = numToAdd; i < placeholderRows.length; i++) {
+        placeholderRows[i].push(null)
       }
     }
 
@@ -60,7 +62,7 @@ const rows = computed(() => {
       while (row.length < radius - 1) {
         row.push(null)
       }
-      rows.push(row)
+      placeholderRows.push(row)
     }
 
     // Next fill on the top
@@ -70,28 +72,31 @@ const rows = computed(() => {
       while (row.length < radius - 1) {
         row.push(null)
       }
-      rows.unshift(row)
+      placeholderRows.unshift(row)
     }
 
     // Fill along the right again
     if (placeholders.length > 0) {
       radius++
-      const numToAdd = Math.min(rows.length, placeholders.length)
+      const numToAdd = Math.min(placeholderRows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        rows[i].push(placeholders.shift() as TrackerItem)
+        placeholderRows[i].push(placeholders.shift() as PlaceholderItem)
       }
-      for (let i = numToAdd; i < rows.length; i++) {
-        rows[i].push(null)
+      for (let i = numToAdd; i < placeholderRows.length; i++) {
+        placeholderRows[i].push(null)
       }
     }
 
+    const rows: ItemRow[] = []
     const itemsRemaining = [...props.gridItems]
-    for (const row of rows) {
+    for (const placeholderRow of placeholderRows) {
+      const row = new Array<TrackerItem | null>(placeholderRow.length)
       for (let i = 0; i < row.length; i++) {
         if (row[i] !== null) {
-          row[i] = itemsRemaining.shift() as TrackerItem
+          row[i] = itemsRemaining.shift() ?? null
         }
       }
+      rows.push(row)
     }
     console.assert(itemsRemaining.length === 0, 'Not all items were placed in the grid')
 
@@ -107,13 +112,15 @@ const rows = computed(() => {
         fillEnd = !fillEnd
       }
     }
+    return rows
   } else {
+    const rows: ItemRow[] = []
     const itemsRemaining = [...props.gridItems]
     for (let i = 0; i < itemsRemaining.length; i += props.gridRowLen) {
       rows.push(itemsRemaining.slice(i, i + props.gridRowLen))
     }
+    return rows
   }
-  return rows
 })
 
 const padding = computed(() => {
@@ -149,7 +156,7 @@ const offsetOdd = computed(() => {
 
 const numHexRings = computed(() => {
   let radius = 1
-  // eslint-disable-next-line no-constant-condition
+
   while (true) {
     if (maxCellsInHexRadius(radius) >= props.gridItems.length) {
       break
@@ -184,12 +191,12 @@ const margins = computed(() => {
 
 <template>
   <div :class="`tracker-grid layout-${layout.toLowerCase()}`">
-    <div :class="`pt-grid layout-${layout.toLowerCase()}`" @click.right.prevent="">
+    <div :class="`tg-grid layout-${layout.toLowerCase()}`" @click.right.prevent="">
       <template v-for="(row, rowIdx) in rows" :key="rowIdx">
         <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
           <GridIcon
             :item="item"
-            :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)"
+            :offset-row="rowIdx % 2 === (offsetOdd ? 1 : 0)"
             :filtered="filteredIds.has(item?.id)"
           />
         </template>
@@ -203,7 +210,7 @@ const margins = computed(() => {
   width: min-content;
   margin: v-bind(margins);
 }
-.pt-grid {
+.tg-grid {
   display: grid;
   grid-template-columns: repeat(v-bind(rowLen), v-bind(cellSizeStr));
   grid-auto-rows: v-bind(cellSizeStr);

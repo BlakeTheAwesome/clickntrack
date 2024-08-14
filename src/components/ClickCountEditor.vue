@@ -102,8 +102,8 @@ const isModified = computed(() => {
 </script>
 
 <template>
-  <DataTable :value="mutableItems" @rowReorder="onRowReorder" :key="itemKey">
-    <Column rowReorder headerStyle="width: 3rem" />
+  <DataTable :key="itemKey" :value="mutableItems" @row-reorder="onRowReorder">
+    <Column row-reorder header-style="width: 3rem" />
     <Column header="Set Default">
       <template #body="slotProps">
         <Button
@@ -135,7 +135,7 @@ const isModified = computed(() => {
     <template #footer>
       <div class="cce-footer">
         <Button icon="pi pi-add" severity="primary" raised aria-label="Add Item" @click="addItem"> Add Item </Button>
-        <div class="spacer"></div>
+        <div class="spacer" />
         <Button
           icon="pi pi-add"
           severity="danger"

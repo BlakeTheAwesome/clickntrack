@@ -13,16 +13,16 @@ const item = computed(() => trackerStore.gridItems[0])
 <template>
   <Story>
     <Variant title="Square">
-      <SetLayoutStore itemShape="Square" />
-      <StoryComponent :item="item" :offsetRow="false" :filtered="false" />
+      <SetLayoutStore item-shape="Square" />
+      <StoryComponent :item="item" :offset-row="false" :filtered="false" />
     </Variant>
     <Variant title="Hex">
-      <SetLayoutStore itemShape="Hex" />
-      <StoryComponent :item="item" :offsetRow="false" :filtered="false" />
+      <SetLayoutStore item-shape="Hex" />
+      <StoryComponent :item="item" :offset-row="false" :filtered="false" />
     </Variant>
     <Variant title="Hex Filtered">
-      <SetLayoutStore itemShape="Hex" />
-      <StoryComponent :item="item" :offsetRow="false" :filtered="true" />
+      <SetLayoutStore item-shape="Hex" />
+      <StoryComponent :item="item" :offset-row="false" :filtered="true" />
     </Variant>
   </Story>
 </template>

@@ -16,6 +16,7 @@ import { useToast } from 'primevue/usetoast'
 import HeaderBar from '@/components/HeaderBar.vue'
 
 import type { TrackerItem } from '@/types/trackerItem'
+import { asError } from 'catch-unknown'
 
 const props = defineProps<{
   gridItems: readonly TrackerItem[]
@@ -44,7 +45,7 @@ function setMutableItemsToDefault() {
 }
 watchEffect(setMutableItemsToDefault)
 
-const presetMenu = ref<Menu>()
+const presetMenu = ref<InstanceType<typeof Menu>>()
 function togglePresetMenu(event: Event) {
   presetMenu.value?.toggle(event)
 }
@@ -68,21 +69,22 @@ async function parseJsonFile(file: File): Promise<TrackerItem[]> {
     const fileReader = new FileReader()
     fileReader.onload = (event) => {
       if (!event.target?.result) {
-        reject('No file target')
+        reject(new Error('No file target'))
         return
       }
 
       try {
         resolve(JSON.parse(event.target.result as string) as TrackerItem[])
       } catch (err) {
-        reject(err)
+        reject(asError(err))
       }
     }
-    fileReader.onerror = (error) => reject(error)
+    fileReader.onerror = (error) => reject(asError(error))
     fileReader.readAsText(file)
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 presetFileDialog.onChange(async (files) => {
   try {
     if (files) {
@@ -90,13 +92,14 @@ presetFileDialog.onChange(async (files) => {
       const json = await parseJsonFile(file)
       loadPreset(json)
     }
-  } catch (err) {
+  } catch (e) {
+    const err = asError(e)
     toast.add({
       severity: 'error',
       closable: true,
       life: 5000,
       summary: 'Error Loading Json',
-      detail: `${err}`,
+      detail: err.message,
     })
     console.error(err)
   }
@@ -214,8 +217,9 @@ const errorMessage = computed(() => {
 
 const editingRows = ref<TrackerItem[]>([])
 const onRowEditSave = (event: DataTableRowEditSaveEvent) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   let { newData, index } = event
-  mutableItems.value[index] = newData
+  mutableItems.value[index] = newData as TrackerItem
 }
 
 function exportJson() {
@@ -264,13 +268,13 @@ const newKeyword = ref('')
       <Button
         label="Load/Import Item Set"
         icon="pi pi-upload"
-        @click="togglePresetMenu"
         aria-haspopup="true"
         aria-controls="overlay_menu"
+        @click="togglePresetMenu"
       />
-      <Menu ref="presetMenu" id="overlay_menu" :model="gridPresets" :popup="true" />
+      <Menu id="overlay_menu" ref="presetMenu" :model="gridPresets" :popup="true" />
       <Button label="Export Item Set" icon="pi pi-download" @click="exportJson" />
-      <div class="spacer"></div>
+      <div class="spacer" />
       <span class="pie-error">{{ errorMessage }}</span>
       <Button
         label="Revert Changes"
@@ -294,17 +298,17 @@ const newKeyword = ref('')
     </div>
     <div>
       <DataTable
+        v-model:editingRows="editingRows"
         :value="mutableItems"
-        @rowReorder="onRowReorder"
         paginator
         :rows="50"
-        :rowsPerPageOptions="[5, 10, 20, 50, 100, 200, 500, 1000, 5000]"
-        v-model:editingRows="editingRows"
-        editMode="row"
+        :rows-per-page-options="[5, 10, 20, 50, 100, 200, 500, 1000, 5000]"
+        edit-mode="row"
+        @row-reorder="onRowReorder"
         @row-edit-save="onRowEditSave"
       >
-        <Column rowReorder headerStyle="width: 3rem" />
-        <Column header="Id" field="id" headerStyle="width: 3rem" />
+        <Column row-reorder header-style="width: 3rem" />
+        <Column header="Id" field="id" header-style="width: 3rem" />
         <Column header="Display Name" field="displayName">
           <template #editor="{ data, field }">
             <InputText v-model="data[field]" size="small" />
@@ -335,6 +339,7 @@ const newKeyword = ref('')
         </Column>
         <Column header="Keywords">
           <template #editor="slotProps">
+            <!-- Display=chip is broken -->
             <MultiSelect
               v-model="slotProps.data.keywords"
               display="chip"
@@ -360,8 +365,8 @@ const newKeyword = ref('')
             </div>
           </template>
         </Column>
-        <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center" />
-        <Column headerStyle="width: 3rem">
+        <Column :row-editor="true" style="width: 10%; min-width: 8rem" body-style="text-align:center" />
+        <Column header-style="width: 3rem">
           <template #body="slotProps">
             <Button icon="pi pi-trash" severity="danger" text aria-label="Clear" @click="deleteItem(slotProps.index)" />
           </template>
