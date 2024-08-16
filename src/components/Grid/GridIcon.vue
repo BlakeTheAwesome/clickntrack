@@ -46,9 +46,18 @@ function onRightClick() {
   }
 }
 
+function onMiddleClick() {
+  if (itemId.value !== null) {
+    trackerStore.toggleMarked(itemId.value)
+  }
+}
+
 const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()}`)
 const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both')
 const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both')
+const showMark = computed(() => trackerState.value?.marked ?? false)
+const markColor = computed(() => layoutStore.markColor)
+const markShadowColor = computed(() => layoutStore.markShadowColor)
 const textColor = computed(() => layoutStore.itemTextColor)
 const textBackgroundColor = computed(
   () => `${layoutStore.itemTextBackgroundColor}${layoutStore.itemTextBackgroundOpacityByte.toString(16)}`,
@@ -56,6 +65,42 @@ const textBackgroundColor = computed(
 const tooltip = computed(() =>
   layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null,
 )
+
+const markAlign = computed(() => {
+  switch (layoutStore.markLocation) {
+    case 'TL':
+    case 'TC':
+    case 'TR':
+      return 'start'
+    case 'CL':
+    case 'CC':
+    case 'CR':
+      return 'center'
+    case 'BL':
+    case 'BC':
+    case 'BR':
+      return 'end'
+  }
+  throw new Error('Invalid text location')
+})
+const markJustify = computed(() => {
+  switch (layoutStore.markLocation) {
+    case 'TL':
+    case 'CL':
+    case 'BL':
+      return 'start'
+    case 'TC':
+    case 'CC':
+    case 'BC':
+      return 'center'
+    case 'TR':
+    case 'CR':
+    case 'BR':
+      return 'end'
+  }
+  throw new Error('Invalid text location')
+})
+
 const textAlign = computed(() => {
   switch (layoutStore.textLocation) {
     case 'TL':
@@ -92,11 +137,18 @@ const textJustify = computed(() => {
 })
 const textMargins = computed(() => {
   if (layoutStore.itemShape === 'Square') {
-    return '0'
+    return `${layoutStore.textMargin}px`
   }
-  return '25% 0'
+  return `25% ${layoutStore.textMargin}px`
+})
+const markMargins = computed(() => {
+  if (layoutStore.itemShape === 'Square') {
+    return `${layoutStore.markMargin}px`
+  }
+  return `25% ${layoutStore.markMargin}px`
 })
 const textSize = computed(() => `${layoutStore.textSize}px`)
+const markSize = computed(() => `${layoutStore.markSize}px`)
 
 const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
 </script>
@@ -108,6 +160,8 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
     :class="layoutClass"
     @click="onLeftClick"
     @click.right.prevent="onRightClick"
+    @click.middle.prevent="onMiddleClick"
+    @mousedown.middle.prevent.stop
   >
     <template v-if="item !== null">
       <div class="gi-image-container">
@@ -115,6 +169,9 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
       </div>
       <div v-if="showText" class="gi-text">
         {{ item.overlayText ?? item.displayName }}
+      </div>
+      <div v-if="showMark" class="gi-mark">
+        {{ layoutStore.markText }}
       </div>
       <div class="overlay" />
       <div class="filter-overlay" />
@@ -166,6 +223,20 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
     font-size: v-bind(textSize);
     z-index: 100;
     padding-inline: 2px;
+  }
+
+  & .gi-mark {
+    grid-area: cell;
+    align-self: v-bind(markAlign);
+    justify-self: v-bind(markJustify);
+    margin: v-bind(markMargins);
+    color: v-bind(markColor);
+    text-shadow: v-bind(markShadowColor) 2px 0 10px;
+    font-weight: bold;
+    word-break: break-word;
+    line-height: 0.8em;
+    font-size: v-bind(markSize);
+    z-index: 100;
   }
 
   & .overlay {
