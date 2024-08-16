@@ -35,8 +35,8 @@ function exportJson(items: readonly TrackerItem[]) {
   <PageItemEditorLayout
     v-model:grid-items="trackerStore.allGridItems"
     :presets="presets"
-    @init-tracker="trackerStore.initTracker($event)"
-    @return-home="router.push({ name: 'tracker' })"
-    @export-items="exportJson"
+    @initTracker="trackerStore.initTracker($event)"
+    @returnHome="router.push({ name: 'tracker' })"
+    @exportItems="exportJson"
   />
 </template>

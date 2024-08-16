@@ -19,8 +19,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'open-item-editor': []
-  'clear-tracker': []
+  openItemEditor: []
+  clearTracker: []
 }>()
 
 const layoutStore = useLayoutStore()
@@ -54,7 +54,7 @@ const contentPadding = computed(() => {
             raised
             rounded
             aria-label="Clear"
-            @click="emit('clear-tracker')"
+            @click="emit('clearTracker')"
           />
           <Button
             v-tooltip.bottom="'Settings'"
@@ -74,17 +74,17 @@ const contentPadding = computed(() => {
         <SplitterPanel :size="75" class="pt-content" tabindex="0" @keydown="onKeydown">
           <div class="pt-grid-area">
             <TrackerGrid
-              :grid-items="props.gridItems"
-              :grid-row-len="gridRowLength"
-              :cell-size="cellSize"
+              :gridItems="props.gridItems"
+              :gridRowLen="gridRowLength"
+              :cellSize="cellSize"
               :layout="layout"
               :filter="filter"
             />
             <TrackerStatus :filter="filter" />
           </div>
         </SplitterPanel>
-        <SplitterPanel v-if="showSettings" :size="25" :min-size="25">
-          <SettingsPanel class="pt-settings" @open-item-set-editor="emit('open-item-editor')" />
+        <SplitterPanel v-if="showSettings" :size="25" :minSize="25">
+          <SettingsPanel class="pt-settings" @openItemSetEditor="emit('openItemEditor')" />
         </SplitterPanel>
       </Splitter>
     </div>

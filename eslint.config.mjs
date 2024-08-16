@@ -21,6 +21,12 @@ export default tseslint.config(
         extraFileExtensions: ['.vue'],
       }
     },
+    rules: {
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "vue/attribute-hyphenation": ["error", "never"],
+      "vue/v-on-event-hyphenation": ["error", "never"],
+      "vue/custom-event-name-casing": ["error", "camelCase"],
+    }
   },
   {
     files: ['**/*.mjs'],

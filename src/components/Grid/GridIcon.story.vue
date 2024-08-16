@@ -6,23 +6,29 @@ import { computed } from 'vue'
 const trackerStore = useTrackerStore()
 
 const item = computed(() => trackerStore.gridItems[0])
-
-// Could potentially add more variants here with 'SetLayoutStore' configuring
 </script>
 
 <template>
   <Story>
     <Variant title="Square">
-      <SetLayoutStore item-shape="Square" />
-      <StoryComponent :item="item" :offset-row="false" :filtered="false" />
+      <SetLayoutStore itemShape="Square" />
+      <StoryComponent :item="item" :offsetRow="false" :filtered="false" />
+    </Variant>
+    <Variant title="Square With Text">
+      <SetLayoutStore itemShape="Square" displayType="Both" textLocation="BR" :textMargin="16" />
+      <StoryComponent :item="item" :offsetRow="false" :filtered="false" />
     </Variant>
     <Variant title="Hex">
-      <SetLayoutStore item-shape="Hex" />
-      <StoryComponent :item="item" :offset-row="false" :filtered="false" />
+      <SetLayoutStore itemShape="Hex" />
+      <StoryComponent :item="item" :offsetRow="false" :filtered="false" />
     </Variant>
     <Variant title="Hex Filtered">
-      <SetLayoutStore item-shape="Hex" />
-      <StoryComponent :item="item" :offset-row="false" :filtered="true" />
+      <SetLayoutStore itemShape="Hex" />
+      <StoryComponent :item="item" :offsetRow="false" :filtered="true" />
+    </Variant>
+    <Variant title="Hex With Text">
+      <SetLayoutStore itemShape="Hex" displayType="Both" textLocation="BR" :textMargin="16" />
+      <StoryComponent :item="item" :offsetRow="false" :filtered="false" />
     </Variant>
   </Story>
 </template>

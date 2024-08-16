@@ -8,24 +8,12 @@ const trackerStore = useTrackerStore()
 <template>
   <Story>
     <Variant title="Square Grid">
-      <SetLayoutStore item-shape="Square" />
-      <StoryComponent
-        :grid-items="trackerStore.gridItems"
-        :grid-row-len="10"
-        :cell-size="48"
-        layout="Grid"
-        :filter="''"
-      />
+      <SetLayoutStore itemShape="Square" />
+      <StoryComponent :gridItems="trackerStore.gridItems" :gridRowLen="10" :cellSize="48" layout="Grid" :filter="''" />
     </Variant>
     <Variant title="Hex Grid">
-      <SetLayoutStore item-shape="Hex" />
-      <StoryComponent
-        :grid-items="trackerStore.gridItems"
-        :grid-row-len="10"
-        :cell-size="48"
-        layout="Hex"
-        :filter="''"
-      />
+      <SetLayoutStore itemShape="Hex" />
+      <StoryComponent :gridItems="trackerStore.gridItems" :gridRowLen="10" :cellSize="48" layout="Hex" :filter="''" />
     </Variant>
   </Story>
 </template>
