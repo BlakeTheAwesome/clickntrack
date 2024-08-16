@@ -196,7 +196,7 @@ const margins = computed(() => {
         <template v-for="(item, itemIdx) in row" :key="`${item?.id}-${itemIdx}`">
           <GridIcon
             :item="item"
-            :offset-row="rowIdx % 2 === (offsetOdd ? 1 : 0)"
+            :offsetRow="rowIdx % 2 === (offsetOdd ? 1 : 0)"
             :filtered="filteredIds.has(item?.id)"
           />
         </template>

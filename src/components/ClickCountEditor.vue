@@ -102,8 +102,8 @@ const isModified = computed(() => {
 </script>
 
 <template>
-  <DataTable :key="itemKey" :value="mutableItems" @row-reorder="onRowReorder">
-    <Column row-reorder header-style="width: 3rem" />
+  <DataTable :key="itemKey" :value="mutableItems" @rowReorder="onRowReorder">
+    <Column rowReorder headerStyle="width: 3rem" />
     <Column header="Set Default">
       <template #body="slotProps">
         <Button

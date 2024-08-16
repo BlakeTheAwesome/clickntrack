@@ -11,7 +11,7 @@ function localSetupApp({ app }: Vue3StorySetupApi) {
 </script>
 
 <template>
-  <Story :setup-app="localSetupApp">
+  <Story :setupApp="localSetupApp">
     <Variant title="No Actions">
       <StoryComponent />
     </Variant>

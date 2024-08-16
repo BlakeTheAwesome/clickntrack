@@ -28,7 +28,7 @@ import { useTrackerStore } from '@/stores/trackerStore'
 import ClickCountEditor from './ClickCountEditor.vue'
 
 const emit = defineEmits<{
-  'open-item-set-editor': []
+  openItemSetEditor: []
 }>()
 
 const LayoutsMutable = Layouts as unknown as Layout[]
@@ -40,7 +40,7 @@ const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
 
 function openItemEditor() {
-  emit('open-item-set-editor')
+  emit('openItemSetEditor')
 }
 
 const bgColor = computed({
@@ -87,7 +87,7 @@ const itemTextBgColor = computed({
               :min="1"
               :max="1000"
               mode="decimal"
-              show-buttons
+              showButtons
             />
           </div>
           <div class="sp-item-row">
@@ -107,7 +107,7 @@ const itemTextBgColor = computed({
               :min="1"
               :max="1000"
               mode="decimal"
-              show-buttons
+              showButtons
             />
           </div>
         </div>
@@ -137,7 +137,7 @@ const itemTextBgColor = computed({
               :min="1"
               :max="10000"
               mode="decimal"
-              show-buttons
+              showButtons
             />
           </div>
           <div class="sp-item-row">Seed: <InputText v-model="trackerStore.seed" class="sp-control" /></div>
@@ -170,7 +170,7 @@ const itemTextBgColor = computed({
               :min="1"
               :max="100"
               mode="decimal"
-              show-buttons
+              showButtons
             />
           </div>
           <div v-if="layoutStore.displayType !== 'Text'" class="sp-item-row">
@@ -181,7 +181,7 @@ const itemTextBgColor = computed({
               :min="-1000"
               :max="1000"
               mode="decimal"
-              show-buttons
+              showButtons
             />
           </div>
           <div v-if="layoutStore.displayType !== 'Image'" class="sp-item-row">

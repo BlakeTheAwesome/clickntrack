@@ -25,9 +25,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:gridItems': [items: TrackerItem[]]
-  'init-tracker': [items: readonly TrackerItem[]]
-  'export-items': [items: readonly TrackerItem[]]
-  'return-home': []
+  initTracker: [items: readonly TrackerItem[]]
+  exportItems: [items: readonly TrackerItem[]]
+  returnHome: []
 }>()
 
 const toast = useToast()
@@ -58,7 +58,7 @@ function loadPreset(preset: readonly TrackerItem[]) {
     reject: () => {},
     accept: () => {
       editingRows.value = []
-      emit('init-tracker', preset)
+      emit('initTracker', preset)
     },
   })
 }
@@ -223,7 +223,7 @@ const onRowEditSave = (event: DataTableRowEditSaveEvent) => {
 }
 
 function exportJson() {
-  emit('export-items', mutableItems.value)
+  emit('exportItems', mutableItems.value)
 }
 
 function updateIds() {
@@ -233,7 +233,7 @@ function updateIds() {
 }
 
 function returnToHome() {
-  const callback = () => emit('return-home')
+  const callback = () => emit('returnHome')
 
   if (!isModified.value && editingRows.value.length === 0) {
     callback()
@@ -302,13 +302,13 @@ const newKeyword = ref('')
         :value="mutableItems"
         paginator
         :rows="50"
-        :rows-per-page-options="[5, 10, 20, 50, 100, 200, 500, 1000, 5000]"
-        edit-mode="row"
-        @row-reorder="onRowReorder"
-        @row-edit-save="onRowEditSave"
+        :rowsPerPageOptions="[5, 10, 20, 50, 100, 200, 500, 1000, 5000]"
+        editMode="row"
+        @rowReorder="onRowReorder"
+        @rowEditSave="onRowEditSave"
       >
-        <Column row-reorder header-style="width: 3rem" />
-        <Column header="Id" field="id" header-style="width: 3rem" />
+        <Column rowReorder headerStyle="width: 3rem" />
+        <Column header="Id" field="id" headerStyle="width: 3rem" />
         <Column header="Display Name" field="displayName">
           <template #editor="{ data, field }">
             <InputText v-model="data[field]" size="small" />
@@ -345,7 +345,7 @@ const newKeyword = ref('')
               display="chip"
               :options="availableKeywords"
               placeholder="Keywords"
-              scroll-height="500px"
+              scrollHeight="500px"
             >
               <template #header>
                 <div class="pie-new-keyword-row">
@@ -365,8 +365,8 @@ const newKeyword = ref('')
             </div>
           </template>
         </Column>
-        <Column :row-editor="true" style="width: 10%; min-width: 8rem" body-style="text-align:center" />
-        <Column header-style="width: 3rem">
+        <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center" />
+        <Column headerStyle="width: 3rem">
           <template #body="slotProps">
             <Button icon="pi pi-trash" severity="danger" text aria-label="Clear" @click="deleteItem(slotProps.index)" />
           </template>

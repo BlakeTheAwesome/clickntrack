@@ -16,8 +16,8 @@ function openItemEditor() {
 
 <template>
   <PageTrackerLayout
-    :grid-items="trackerStore.gridItems"
-    @open-item-editor="openItemEditor"
-    @clear-tracker="trackerStore.clearTracker"
+    :gridItems="trackerStore.gridItems"
+    @openItemEditor="openItemEditor"
+    @clearTracker="trackerStore.clearTracker"
   />
 </template>

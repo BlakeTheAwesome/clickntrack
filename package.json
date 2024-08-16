@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
-    "lint": "eslint",
+    "lint": "eslint --fix",
     "format": "prettier --write src/",
     "stories": "histoire dev"
   },
