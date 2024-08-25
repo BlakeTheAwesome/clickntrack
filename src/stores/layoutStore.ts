@@ -33,6 +33,7 @@ export const useLayoutStore = defineStore('layout', () => {
   const textSize = ref(16)
   const markSize = ref(20)
   const highlightCoversImage = ref(false)
+  const keywordPrefix = ref(':')
 
   return {
     bgColor,
@@ -56,5 +57,6 @@ export const useLayoutStore = defineStore('layout', () => {
     markColor,
     markShadowColor,
     markMargin,
+    keywordPrefix,
   }
 })

@@ -11,18 +11,35 @@ function stringInKeywords(strToMatch: string, keywords: string[]): boolean {
 }
 
 function itemMatchesFilters(item: TrackerItem, namesToMatch: string[], keywordsToMatch: string[]): boolean {
-  if (namesToMatch.some((name) => !item.displayName.toLowerCase().includes(name))) {
-    return false
+  const matchName = namesToMatch.length > 0
+  const matchKeyword = keywordsToMatch.length > 0
+
+  if (!matchName && !matchKeyword) {
+    return true
   }
 
-  const lowerCaseKeywords = item.keywords?.map((x) => x.toLowerCase())
-  if (keywordsToMatch.some((x) => !lowerCaseKeywords || !stringInKeywords(x, lowerCaseKeywords))) {
-    return false
+  if (matchName) {
+    const itemName = item.displayName.toLowerCase()
+    if (namesToMatch.some((x) => itemName.includes(x))) {
+      return true
+    }
   }
-  return true
+
+  if (matchKeyword) {
+    const lowerCaseKeywords = item.keywords?.map((x) => x.toLowerCase())
+    if (lowerCaseKeywords && keywordsToMatch.some((x) => stringInKeywords(x, lowerCaseKeywords))) {
+      return true
+    }
+  }
+
+  return false
 }
 
-export function getIdsToFilterOut(filter: string, itemList: readonly TrackerItem[]): Set<number> {
+export function getIdsToFilterOut(
+  filter: string,
+  keywordPrefix: string,
+  itemList: readonly TrackerItem[],
+): Set<number> {
   if (filter === '') {
     return new Set<number>()
   }
@@ -30,11 +47,16 @@ export function getIdsToFilterOut(filter: string, itemList: readonly TrackerItem
   const filterSegments = filter.split(' ').filter((x) => x !== '')
   const namesToMatch: string[] = []
   const keywordsToMatch: string[] = []
-  for (const segment of filterSegments) {
-    if (segment.startsWith(':')) {
-      keywordsToMatch.push(segment.slice(1).toLowerCase())
+  for (const filterSegment of filterSegments) {
+    const segment = filterSegment.toLowerCase()
+    if (!keywordPrefix) {
+      keywordsToMatch.push(segment)
+      namesToMatch.push(segment)
+    } else if (segment.startsWith(keywordPrefix)) {
+      const keyword = segment.slice(1)
+      keywordsToMatch.push(keyword)
     } else {
-      namesToMatch.push(segment.toLowerCase())
+      namesToMatch.push(segment)
     }
   }
 
