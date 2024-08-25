@@ -8,7 +8,7 @@ import SplitterPanel from 'primevue/splitterpanel'
 import TrackerGrid from '@/components/Grid/TrackerGrid.vue'
 import TrackerStatus from '@/components/TrackerStatus.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
-import SettingsPanel from '@/components/SettingsPanel.vue'
+import SettingsPanel from '@/components/SettingsPanel/SettingsPanel.vue'
 
 import { useLayoutStore } from '@/stores/layoutStore'
 import type { TrackerItem } from '@/types/trackerItem'
