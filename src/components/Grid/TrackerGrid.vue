@@ -12,6 +12,7 @@ const props = defineProps<{
   gridRowLen: number
   cellSize: number
   filter?: string
+  keywordPrefix: string
   layout: Layout
 }>()
 
@@ -174,7 +175,7 @@ const filteredIds = computed(() => {
   if (!props.filter) {
     return new Set()
   }
-  return getIdsToFilterOut(props.filter, props.gridItems)
+  return getIdsToFilterOut(props.filter, props.keywordPrefix, props.gridItems)
 })
 
 const cellSizeStr = computed(() => `${props.cellSize}px`)

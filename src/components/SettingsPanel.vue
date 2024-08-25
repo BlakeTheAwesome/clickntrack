@@ -142,6 +142,10 @@ const showImageSettings = computed(() => {
               showButtons
             />
           </div>
+          <div class="sp-item-row">
+            <span>Keyword Prefix (default ":"):</span>
+            <InputText v-model="layoutStore.keywordPrefix" class="sp-control" placeholder="<none>" maxlength="1" />
+          </div>
         </div>
       </TabPanel>
       <TabPanel header="Display">

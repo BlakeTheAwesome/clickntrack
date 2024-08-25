@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>()
 
 const layoutStore = useLayoutStore()
-const { cellSize, layout, gridRowLength } = storeToRefs(layoutStore)
+const { cellSize, layout, gridRowLength, keywordPrefix } = storeToRefs(layoutStore)
 
 const { filter, onKeydown } = useKeyboardFilter()
 
@@ -79,6 +79,7 @@ const contentPadding = computed(() => {
               :cellSize="cellSize"
               :layout="layout"
               :filter="filter"
+              :keywordPrefix="keywordPrefix"
             />
             <TrackerStatus :filter="filter" />
           </div>
