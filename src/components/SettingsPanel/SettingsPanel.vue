@@ -1,41 +1,28 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import Button from 'primevue/button'
-import ColorPicker from 'primevue/colorpicker'
-import Checkbox from 'primevue/checkbox'
-import Select from 'primevue/select'
-import InputNumber from 'primevue/inputnumber'
-import InputText from 'primevue/inputtext'
-import Tabs from 'primevue/tabs';
-import TabList from 'primevue/tablist';
-import Tab from 'primevue/tab';
-import TabPanels from 'primevue/tabpanels';
-import TabPanel from 'primevue/tabpanel';
-import Slider from 'primevue/slider'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
 
-import {
-  useLayoutStore,
-  Layouts,
-  type Layout,
-  ItemShapes,
-  type ItemShape,
-  DisplayTypes,
-  type DisplayType,
-  TextLocations,
-  type TextLocation,
-} from '@/stores/layoutStore'
+import { useLayoutStore } from '@/stores/layoutStore'
+import { Layouts, ItemShapes, DisplayTypes, AnchorLocations } from '@/types/layoutTypes'
 import { useTrackerStore } from '@/stores/trackerStore'
+
 import ClickCountEditor from './ClickCountEditor.vue'
+import SettingsTextItem from './SettingsTextItem.vue'
+import SettingsNumberItem from './SettingsNumberItem.vue'
+import SettingsCheckboxItem from './SettingsCheckboxItem.vue'
+import SettingsColorItem from './SettingsColorItem.vue'
+import SettingsSelectItem from './SettingsSelectItem.vue'
+import SettingsSliderItem from './SettingsSliderItem.vue'
+import SettingsButtonItem from './SettingsButtonItem.vue'
 
 const emit = defineEmits<{
   openItemSetEditor: []
 }>()
-
-const LayoutsMutable = Layouts as unknown as Layout[]
-const ItemShapesMutable = ItemShapes as unknown as ItemShape[]
-const DisplayTypesMutable = DisplayTypes as unknown as DisplayType[]
-const TextLocationsMutable = TextLocations as unknown as TextLocation[]
 
 const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
@@ -43,41 +30,6 @@ const trackerStore = useTrackerStore()
 function openItemEditor() {
   emit('openItemSetEditor')
 }
-
-const bgColor = computed({
-  get: () => layoutStore.bgColor.substring(1),
-  set: (col) => {
-    layoutStore.bgColor = `#${col}`
-  },
-})
-
-const itemTextColor = computed({
-  get: () => layoutStore.itemTextColor.substring(1),
-  set: (col) => {
-    layoutStore.itemTextColor = `#${col}`
-  },
-})
-
-const itemTextBgColor = computed({
-  get: () => layoutStore.itemTextBackgroundColor.substring(1),
-  set: (col) => {
-    layoutStore.itemTextBackgroundColor = `#${col}`
-  },
-})
-
-const markColor = computed({
-  get: () => layoutStore.markColor.substring(1),
-  set: (col) => {
-    layoutStore.markColor = `#${col}`
-  },
-})
-
-const markShadowColor = computed({
-  get: () => layoutStore.markShadowColor.substring(1),
-  set: (col) => {
-    layoutStore.markShadowColor = `#${col}`
-  },
-})
 
 const showTextSettings = computed(() => {
   switch (layoutStore.displayType) {
@@ -109,181 +61,111 @@ const showImageSettings = computed(() => {
       <TabPanels>
         <TabPanel value="board">
           <div class="sp-tab-content">
-            <div class="sp-item-row">
-              <span>Layout:</span>
-              <Select
-                v-model="layoutStore.layout"
-                class="sp-control"
-                :options="LayoutsMutable"
-                placeholder="Select a layout"
-              />
-            </div>
-            <div v-if="layoutStore.layout === 'Grid'" class="sp-item-row">
-              <span>Grid Row Length:</span>
-              <InputNumber
+            <SettingsSelectItem
+              v-model="layoutStore.layout"
+              placeholder="Select a layout"
+              label="Layout"
+              :items="Layouts"
+            />
+            <template v-if="layoutStore.layout === 'Grid'">
+              <SettingsNumberItem
                 v-model="layoutStore.gridRowLength"
-                class="sp-control"
+                label="Grid Row Length"
                 :min="1"
                 :max="1000"
                 mode="decimal"
                 showButtons
               />
-            </div>
-            <div class="sp-item-row">
-              <span>Item Shape:</span>
-              <Select
-                v-model="layoutStore.itemShape"
-                class="sp-control"
-                :options="ItemShapesMutable"
-                placeholder="Select a shape"
-              />
-            </div>
-            <div class="sp-item-row">
-              <span>Item Size:</span>
-              <InputNumber
-                v-model="layoutStore.cellSize"
-                class="sp-control"
-                :min="1"
-                :max="1000"
-                mode="decimal"
-                showButtons
-              />
-            </div>
-            <div class="sp-item-row">
-              <span>Keyword Prefix (default ":"):</span>
-              <InputText v-model="layoutStore.keywordPrefix" class="sp-control" placeholder="<none>" maxlength="1" />
-            </div>
+            </template>
+            <SettingsSelectItem v-model="layoutStore.itemShape" label="Item Shape" :items="ItemShapes" />
+            <SettingsNumberItem
+              v-model="layoutStore.cellSize"
+              label="Item Size"
+              :min="1"
+              :max="1000"
+              mode="decimal"
+              showButtons
+            />
+            <SettingsTextItem
+              v-model="layoutStore.keywordPrefix"
+              label="Keyword Prefix (default ':')"
+              placeholder="<none>"
+              maxlength="1"
+            />
           </div>
         </TabPanel>
         <TabPanel value="display">
           <div class="sp-tab-content">
-            <div class="sp-item-row">
-              <span>Background Color:</span>
-              <ColorPicker v-model="bgColor" class="sp-control" />
-            </div>
-            <div class="sp-item-row">
-              Show Tooltips: <Checkbox v-model="layoutStore.showTooltips" class="sp-control" :binary="true" />
-            </div>
+            <SettingsColorItem v-model="layoutStore.bgColor" label="Background Color" />
+            <SettingsCheckboxItem v-model="layoutStore.showTooltips" label="Show Tooltips" />
             <ClickCountEditor v-model:items="trackerStore.colours" />
           </div>
         </TabPanel>
         <TabPanel value="items">
           <div class="sp-tab-content">
-            <div class="sp-item-row">
-              <Button type="button" label="Open Item Set Editor" @click="openItemEditor" />
-            </div>
-            <div class="sp-item-row">
-              Item Count:
-              <InputNumber
-                v-model="trackerStore.numItems"
-                class="sp-control"
-                :min="1"
-                :max="10000"
-                mode="decimal"
-                showButtons
-              />
-            </div>
-            <div class="sp-item-row">Seed: <InputText v-model="trackerStore.seed" class="sp-control" /></div>
-            <div class="sp-item-row">
-              Shuffle Available Items: <Checkbox v-model="trackerStore.shuffleItems" class="sp-control" :binary="true" />
-            </div>
-            <div class="sp-item-row">Mark Icon: <InputText v-model="layoutStore.markText" class="sp-control" /></div>
-            <div class="sp-item-row">
-              <span>Mark Position:</span>
-              <Select v-model="layoutStore.markLocation" class="sp-control" :options="TextLocationsMutable" />
-            </div>
-            <div class="sp-item-row">
-              Mark Size:
-              <InputNumber
-                v-model="layoutStore.markSize"
-                class="sp-control"
-                :min="1"
-                :max="100"
-                mode="decimal"
-                showButtons
-              />
-            </div>
-            <div class="sp-item-row">
-              Mark Margin:
-              <InputNumber
-                v-model="layoutStore.markMargin"
-                class="sp-control"
+            <SettingsButtonItem label="Open Item Set Editor" @click="openItemEditor" />
+            <SettingsNumberItem
+              v-model="trackerStore.numItems"
+              label="Item Count"
+              :min="1"
+              :max="10000"
+              mode="decimal"
+              showButtons
+            />
+            <SettingsTextItem v-model="trackerStore.seed" label="Seed" />
+            <SettingsCheckboxItem v-model="trackerStore.shuffleItems" label="Shuffle Available Items" />
+            <SettingsTextItem v-model="layoutStore.markText" label="Mark Icon" />
+            <SettingsSelectItem v-model="layoutStore.markLocation" label="Mark Position" :items="AnchorLocations" />
+            <SettingsNumberItem
+              v-model="layoutStore.markSize"
+              label="Mark Size"
+              :min="1"
+              :max="100"
+              mode="decimal"
+              showButtons
+            />
+            <SettingsNumberItem
+              v-model="layoutStore.markMargin"
+              label="Mark Margin"
+              :min="-100"
+              :max="1000"
+              mode="decimal"
+              showButtons
+            />
+            <SettingsColorItem v-model="layoutStore.markColor" label="Mark Color" />
+            <SettingsColorItem v-model="layoutStore.markShadowColor" label="Mark Shadow Color" />
+            <SettingsSelectItem v-model="layoutStore.displayType" label="Display Type" :items="DisplayTypes" />
+            <template v-if="showTextSettings">
+              <SettingsSelectItem v-model="layoutStore.textLocation" label="Text Position" :items="AnchorLocations" />
+              <SettingsNumberItem
+                v-model="layoutStore.textMargin"
+                label="Text Margin"
                 :min="-100"
                 :max="1000"
                 mode="decimal"
                 showButtons
               />
-            </div>
-            <div class="sp-item-row">
-              <span>Mark Color:</span>
-              <ColorPicker v-model="markColor" class="sp-control" />
-            </div>
-            <div class="sp-item-row">
-              <span>Mark Shadow Color:</span>
-              <ColorPicker v-model="markShadowColor" class="sp-control" />
-            </div>
-            <div class="sp-item-row">
-              <span>Display Type:</span>
-              <Select v-model="layoutStore.displayType" class="sp-control" :options="DisplayTypesMutable" />
-            </div>
-            <template v-if="showTextSettings">
-              <div class="sp-item-row">
-                <span>Text Position:</span>
-                <Select v-model="layoutStore.textLocation" class="sp-control" :options="TextLocationsMutable" />
-              </div>
-              <div class="sp-item-row">
-                Text Size:
-                <InputNumber
-                  v-model="layoutStore.textSize"
-                  class="sp-control"
-                  :min="1"
-                  :max="100"
-                  mode="decimal"
-                  showButtons
-                />
-              </div>
-              <div class="sp-item-row">
-                Text Margin:
-                <InputNumber
-                  v-model="layoutStore.textMargin"
-                  class="sp-control"
-                  :min="-100"
-                  :max="1000"
-                  mode="decimal"
-                  showButtons
-                />
-              </div>
             </template>
             <template v-if="showImageSettings">
-              <div class="sp-item-row">
-                Image Margin:
-                <InputNumber
-                  v-model="layoutStore.imageMargin"
-                  class="sp-control"
-                  :min="-1000"
-                  :max="1000"
-                  mode="decimal"
-                  showButtons
-                />
-              </div>
+              <SettingsNumberItem
+                v-model="layoutStore.imageMargin"
+                label="Image Margin"
+                :min="-1000"
+                :max="1000"
+                mode="decimal"
+                showButtons
+              />
               <template v-if="showTextSettings">
-                <div class="sp-item-row">
-                  <span>Image Text Color:</span>
-                  <ColorPicker v-model="itemTextColor" class="sp-control" />
-                </div>
-                <div class="sp-item-row">
-                  <span>Image Text Background Color:</span>
-                  <ColorPicker v-model="itemTextBgColor" class="sp-control" />
-                </div>
-                <div class="sp-item-row">
-                  <span>Background Opacity:</span>
-                  <Slider v-model="layoutStore.itemTextBackgroundOpacityByte" class="sp-control" :min="0" :max="255" />
-                </div>
+                <SettingsColorItem v-model="layoutStore.itemTextColor" label="Image Text Color" />
+                <SettingsColorItem v-model="layoutStore.itemTextBackgroundColor" label="Image Text Background Color" />
+                <SettingsSliderItem
+                  v-model="layoutStore.itemTextBackgroundOpacityByte"
+                  label="Background Opacity"
+                  :min="0"
+                  :max="255"
+                />
               </template>
-              <div class="sp-item-row">
-                <span>Highlight Covers Image:</span>
-                <Checkbox v-model="layoutStore.highlightCoversImage" class="sp-control" :binary="true" />
-              </div>
+              <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" />
             </template>
           </div>
         </TabPanel>
@@ -298,16 +180,5 @@ const showImageSettings = computed(() => {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
-}
-
-.sp-item-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sp-control {
-  flex-grow: 1;
 }
 </style>
