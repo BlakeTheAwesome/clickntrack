@@ -29,7 +29,7 @@ export const useTrackerStore = defineStore('tracker', () => {
 
   const numItems = ref(151)
   const seed = ref('')
-  const shuffleItems = ref(false)
+  const shuffleItems = ref(true)
 
   const allGridItems = ref<TrackerItem[]>(pokemonList)
   const gridItems = computed(() => {

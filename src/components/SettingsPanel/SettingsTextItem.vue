@@ -5,6 +5,7 @@ const modelValue = defineModel<string>({ required: true })
 
 defineProps<{
   label: string
+  helpText?: string
 }>()
 
 defineOptions({
@@ -14,8 +15,11 @@ defineOptions({
 
 <template>
   <div class="sti-item-row">
-    <span class="sti-label">{{ label }}</span>
-    <InputText v-model="modelValue" class="sti-control" v-bind="$attrs" />
+    <div class="sti-label-area">
+      <span class="sti-grow">{{ label }}</span>
+      <div v-if="helpText" v-tooltip="helpText" class="pi pi-info-circle"></div>
+    </div>
+    <InputText v-model="modelValue" class="sti-grow" v-bind="$attrs" />
   </div>
 </template>
 
@@ -27,11 +31,18 @@ defineOptions({
   gap: 0.5rem;
 }
 
+.sti-label-area {
+  width: 30%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .sti-label {
   width: 30%;
 }
 
-.sti-control {
+.sti-grow {
   flex-grow: 1;
 }
 </style>

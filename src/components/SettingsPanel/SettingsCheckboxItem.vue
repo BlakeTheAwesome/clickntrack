@@ -5,6 +5,7 @@ const modelValue = defineModel<boolean>({ required: true })
 
 defineProps<{
   label: string
+  helpText?: string
 }>()
 
 defineOptions({
@@ -14,8 +15,11 @@ defineOptions({
 
 <template>
   <div class="sci-item-row">
-    <span class="sci-label">{{ label }}</span>
-    <Checkbox v-model="modelValue" class="sci-control" :binary="true" v-bind="$attrs" />
+    <div class="sci-label-area">
+      <span class="sci-grow">{{ label }}</span>
+      <div v-if="helpText" v-tooltip="helpText" class="pi pi-info-circle"></div>
+    </div>
+    <Checkbox v-model="modelValue" class="sci-grow" :binary="true" v-bind="$attrs" />
   </div>
 </template>
 
@@ -27,11 +31,18 @@ defineOptions({
   gap: 0.5rem;
 }
 
+.sci-label-area {
+  width: 30%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .sci-label {
   width: 30%;
 }
 
-.sci-control {
+.sci-grow {
   flex-grow: 1;
 }
 </style>

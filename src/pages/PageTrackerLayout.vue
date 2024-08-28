@@ -4,6 +4,8 @@ import { storeToRefs } from 'pinia'
 import Button from 'primevue/button'
 import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
+import { useConfirm } from 'primevue/useconfirm'
+import ConfirmDialog from 'primevue/confirmdialog'
 
 import TrackerGrid from '@/components/Grid/TrackerGrid.vue'
 import TrackerStatus from '@/components/TrackerStatus.vue'
@@ -27,6 +29,7 @@ const layoutStore = useLayoutStore()
 const { cellSize, layout, gridRowLength, keywordPrefix } = storeToRefs(layoutStore)
 
 const { filter, onKeydown } = useKeyboardFilter()
+const confirmDialog = useConfirm()
 
 const showSettings = ref(true)
 function toggleSettings() {
@@ -39,25 +42,38 @@ const contentPadding = computed(() => {
   const padding = Math.max(minPadding, cellSize.value)
   return `${padding}px ${padding}px ${minPadding}px ${padding}px`
 })
+
+function clearBoard() {
+  confirmDialog.require({
+    message: 'Are you sure you want to clear all the clicks off the board?',
+    header: 'Clear',
+    icon: 'pi pi-exclamation-triangle',
+    reject: () => {},
+    accept: () => {
+      emit('clearTracker')
+    },
+  })
+}
 </script>
 
 <template>
   <div class="page-tracker">
     <div class="pt-header">
+      <ConfirmDialog />
       <HeaderBar>
         <template #actions>
           <Button
-            v-tooltip.bottom="'Clear'"
+            v-tooltip.bottom="'Clear Clicks'"
             icon="pi pi-ban"
             severity="secondary"
             text
             raised
             rounded
             aria-label="Clear"
-            @click="emit('clearTracker')"
+            @click="clearBoard"
           />
           <Button
-            v-tooltip.bottom="'Settings'"
+            v-tooltip.bottom="'Toggle Settings'"
             icon="pi pi-cog"
             severity="secondary"
             text

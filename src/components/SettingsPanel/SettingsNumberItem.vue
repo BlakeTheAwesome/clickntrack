@@ -5,6 +5,7 @@ const modelValue = defineModel<number>({ required: true })
 
 defineProps<{
   label: string
+  helpText?: string
 }>()
 
 defineOptions({
@@ -14,8 +15,11 @@ defineOptions({
 
 <template>
   <div class="sni-item-row">
-    <span class="sni-label">{{ label }}</span>
-    <InputNumber v-model="modelValue" class="sni-control" v-bind="$attrs" />
+    <div class="sni-label-area">
+      <span class="sni-grow">{{ label }}</span>
+      <div v-if="helpText" v-tooltip="helpText" class="pi pi-info-circle"></div>
+    </div>
+    <InputNumber v-model="modelValue" class="sni-grow" v-bind="$attrs" />
   </div>
 </template>
 
@@ -27,11 +31,18 @@ defineOptions({
   gap: 0.5rem;
 }
 
+.sni-label-area {
+  width: 30%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .sni-label {
   width: 30%;
 }
 
-.sni-control {
+.sni-grow {
   flex-grow: 1;
 }
 </style>

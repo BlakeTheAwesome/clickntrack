@@ -8,11 +8,8 @@ const modelValue = defineModel<string>({ required: true })
 
 defineProps<{
   label: string
+  helpText?: string
 }>()
-
-defineOptions({
-  inheritAttrs: false,
-})
 
 const textInvalid = ref(false)
 
@@ -42,7 +39,10 @@ watch(colorText, (text) => {
 
 <template>
   <div class="sci-item-row">
-    <span class="sci-label">{{ label }}</span>
+    <div class="sci-label-area">
+      <span class="sci-grow">{{ label }}</span>
+      <div v-if="helpText" v-tooltip="helpText" class="pi pi-info-circle"></div>
+    </div>
     <div class="sci-control-area">
       <ColorPicker v-model="colorModel" />
       <InputText v-model="colorText" :invalid="textInvalid" class="sci-grow" />
@@ -59,8 +59,11 @@ watch(colorText, (text) => {
   gap: 0.5rem;
 }
 
-.sci-label {
+.sci-label-area {
   width: 30%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .sci-controls {

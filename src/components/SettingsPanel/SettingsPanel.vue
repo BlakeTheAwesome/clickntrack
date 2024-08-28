@@ -29,10 +29,6 @@ const emit = defineEmits<{
 const layoutStore = useLayoutStore()
 const trackerStore = useTrackerStore()
 
-function openItemEditor() {
-  emit('openItemSetEditor')
-}
-
 const showTextSettings = computed(() => {
   switch (layoutStore.displayType) {
     case 'Text':
@@ -50,75 +46,40 @@ const showImageSettings = computed(() => {
   }
   return false
 })
+
+const shuffleAllItemsHelpText = `This setting causes all items to be shuffled, instead of just the first "Item Count" items.
+
+For example if item count is 15, but available item count is 1000 items defined, this changes between:
+
+- The first 15 items being shuffled
+
+- All 1000 items being shuffled and then 15 selected`
 </script>
 
 <template>
   <div class="settings-panel">
     <Tabs value="board">
       <TabList>
-        <Tab value="board">Board</Tab>
-        <Tab value="display">Display</Tab>
+        <Tab value="board">Board Setup</Tab>
         <Tab value="items">Item Setup</Tab>
+        <Tab value="clicks">Click Setup</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="board">
-          <div class="sp-tab-content">
-            <SettingsSelectItem
-              v-model="layoutStore.layout"
-              placeholder="Select a layout"
-              label="Layout"
-              :items="Layouts"
-            />
-            <template v-if="layoutStore.layout === 'Grid'">
-              <SettingsNumberItem
-                v-model="layoutStore.gridRowLength"
-                label="Grid Row Length"
-                :min="1"
-                :max="1000"
-                mode="decimal"
-                showButtons
-              />
-            </template>
-            <SettingsSelectItem v-model="layoutStore.itemShape" label="Item Shape" :items="ItemShapes" />
-            <SettingsNumberItem
-              v-model="layoutStore.cellSize"
-              label="Item Size"
-              :min="1"
-              :max="1000"
-              mode="decimal"
-              showButtons
-            />
-            <SettingsTextItem
-              v-model="layoutStore.keywordPrefix"
-              label="Keyword Prefix (default ':')"
-              placeholder="<none>"
-              maxlength="1"
-            />
-          </div>
-        </TabPanel>
-        <TabPanel value="display">
-          <div class="sp-tab-content">
-            <SettingsColorItem v-model="layoutStore.bgColor" label="Background Color" />
-            <SettingsCheckboxItem v-model="layoutStore.showTooltips" label="Show Tooltips" />
-            <ClickCountEditor v-model:items="trackerStore.colours" />
-          </div>
-        </TabPanel>
-        <TabPanel value="items">
           <div class="sp-tab-content">
             <Fieldset legend="Item Settings" :toggleable="true">
               <div class="sp-fields">
                 <p class="sp-setting-description">
                   In the <b>Item Set Editor</b> you can configure all of the items that can be shown on the board - for
                   example, you could define all 1000+ pokemon.<br />
-                  The other settings control which subset of those items are shown, and their order. <br />
-                  The <b>Item Count</b> setting defines how many of these will be shown on the board, for example
-                  setting to 151 could show the first 151 pokemon out of the 1000+ defined. <br />
-                  The <b>Seed</b> setting is used to shuffle the positions of the items on the board. You can input any
-                  string. <br />
-                  When <b>Shuffle All Items</b> is set, any item from the 1000+ pokemon set can be in the 151 shown,
-                  rather than shuffling only the first 151 entries. <br />
+                  The other settings control which subset of those items are shown, and their order.
                 </p>
-                <SettingsButtonItem label="Open Item Set Editor" @click="openItemEditor" />
+                <SettingsButtonItem label="Open Item Set Editor" @click="emit('openItemSetEditor')" />
+                <SettingsNumberItem
+                  :modelValue="trackerStore.allGridItems.length"
+                  label="Available Item Count"
+                  disabled
+                />
                 <SettingsNumberItem
                   v-model="trackerStore.numItems"
                   label="Item Count"
@@ -127,10 +88,114 @@ const showImageSettings = computed(() => {
                   mode="decimal"
                   showButtons
                 />
-                <SettingsTextItem v-model="trackerStore.seed" label="Seed" />
-                <SettingsCheckboxItem v-model="trackerStore.shuffleItems" label="Shuffle All Items" />
+                <SettingsTextItem v-model="trackerStore.seed" label="Shuffle Seed" helpText="This setting is used to shuffle the items on the board. When empty, the items will be in the order defined in the editor." />
+                <SettingsCheckboxItem v-model="trackerStore.shuffleItems" label="Shuffle All Items" :helpText="shuffleAllItemsHelpText" />
               </div>
             </Fieldset>
+            <Fieldset legend="Board Settings" :toggleable="true">
+              <div class="sp-fields">
+                <SettingsColorItem v-model="layoutStore.bgColor" label="Background Color" />
+                <SettingsSelectItem
+                  v-model="layoutStore.layout"
+                  placeholder="Select a layout"
+                  label="Board Shape"
+                  :items="Layouts"
+                />
+                <template v-if="layoutStore.layout === 'Grid'">
+                  <SettingsNumberItem
+                    v-model="layoutStore.gridRowLength"
+                    label="Items Per Row"
+                    :min="1"
+                    :max="1000"
+                    mode="decimal"
+                    showButtons
+                  />
+                </template>
+                <SettingsSelectItem v-model="layoutStore.itemShape" label="Item Shape" :items="ItemShapes" />
+                <SettingsNumberItem
+                  v-model="layoutStore.cellSize"
+                  label="Item Size"
+                  :min="1"
+                  :max="1000"
+                  mode="decimal"
+                  showButtons
+                />
+              </div>
+            </Fieldset>
+            <Fieldset legend="Other Settings" :toggleable="true">
+              <div class="sp-fields">
+                <SettingsTextItem
+                  v-model="layoutStore.keywordPrefix"
+                  label="Keyword Prefix (default ':')"
+                  placeholder="<none>"
+                  maxlength="1"
+                />
+            </div>
+            </Fieldset>
+          </div>
+        </TabPanel>
+        <TabPanel value="clicks">
+          <div class="sp-tab-content">
+            <p class="sp-setting-description">
+              Here you can define the colors that are used when you click on items. <br />
+              Each item starts with a default value (usually 0), and left clicking on the item increases its value, while right clicking decreases the value. <br />
+              <br />
+              Each column of the table does the following:
+              <ul>
+                <li><b>Set Default:</b> Makes this value the default when clearing the board. 0 is probably best.</li>
+                <li><b>Value:</b> The value for that row.</li>
+                <li><b>Color:</b> The color to use for that value.</li>
+                <li><b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.</li>
+              </ul>
+              Remember to <b>Save</b> your changes when you're done.
+            </p>
+            <ClickCountEditor v-model:items="trackerStore.colours" />
+          </div>
+        </TabPanel>
+        <TabPanel value="items">
+          <div class="sp-tab-content">
+            <p class="sp-setting-description">
+              The Display Type setting controls what is shown for each grid item. The options are 'Image' to show the
+              image associated with that item, 'Text' to show the item label, or 'Both' to show both.
+            </p>
+            <SettingsSelectItem v-model="layoutStore.displayType" label="Display Type" :items="DisplayTypes" />
+            <SettingsCheckboxItem v-model="layoutStore.showTooltips" label="Show Tooltips" />
+            <Fieldset v-if="showImageSettings" legend="Image Settings" :toggleable="true">
+              <div class="sp-fields">
+                <SettingsNumberItem
+                  v-model="layoutStore.imageMargin"
+                  label="Image Margin"
+                  :min="-1000"
+                  :max="1000"
+                  mode="decimal"
+                  showButtons
+                  helpText="How much space to leave between the image and the border. A negative margin can make an image appear larger."
+                />
+                <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" />
+              </div>
+            </Fieldset>
+            <Fieldset v-if="showTextSettings" legend="Text Settings" :toggleable="true">
+              <div class="sp-fields">
+                <SettingsSelectItem v-model="layoutStore.textLocation" label="Text Position" :items="AnchorLocations" />
+                <SettingsNumberItem
+                  v-model="layoutStore.textMargin"
+                  label="Text Margin"
+                  :min="-100"
+                  :max="1000"
+                  mode="decimal"
+                  showButtons
+                />
+                <SettingsColorItem v-model="layoutStore.itemTextColor" label="Text Color" />
+                <SettingsColorItem v-model="layoutStore.itemTextBackgroundColor" label="Background Color" />
+                <SettingsSliderItem
+                  v-model="layoutStore.itemTextBackgroundOpacityByte"
+                  label="Background Opacity"
+                  :min="0"
+                  :max="255"
+                />
+              </div>
+            </Fieldset>
+            <Divider />
             <Fieldset legend="Mark" :toggleable="true">
               <div class="sp-fields">
                 <p class="sp-setting-description">
@@ -155,48 +220,8 @@ const showImageSettings = computed(() => {
                   mode="decimal"
                   showButtons
                 />
-                <SettingsColorItem v-model="layoutStore.markColor" label="Mark Color" />
+                <SettingsColorItem v-model="layoutStore.markColor" label="Mark Color" helpText="This is the inner color of the mark"/>
                 <SettingsColorItem v-model="layoutStore.markShadowColor" label="Mark Shadow Color" />
-              </div>
-            </Fieldset>
-            <Divider />
-            <p class="sp-setting-description">
-              The Display Type setting controls what is shown for each grid item. The options are 'Image' to show the
-              image associated with that item, 'Text' to show the item label, or 'Both' to show both.
-            </p>
-            <SettingsSelectItem v-model="layoutStore.displayType" label="Display Type" :items="DisplayTypes" />
-            <Fieldset v-if="showImageSettings" legend="Image Settings" :toggleable="true">
-              <div class="sp-fields">
-                <SettingsNumberItem
-                  v-model="layoutStore.imageMargin"
-                  label="Image Margin"
-                  :min="-1000"
-                  :max="1000"
-                  mode="decimal"
-                  showButtons
-                />
-                <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" />
-              </div>
-            </Fieldset>
-            <Fieldset v-if="showTextSettings" legend="Text Settings" :toggleable="true">
-              <div class="sp-fields">
-                <SettingsSelectItem v-model="layoutStore.textLocation" label="Text Position" :items="AnchorLocations" />
-                <SettingsNumberItem
-                  v-model="layoutStore.textMargin"
-                  label="Text Margin"
-                  :min="-100"
-                  :max="1000"
-                  mode="decimal"
-                  showButtons
-                />
-                <SettingsColorItem v-model="layoutStore.itemTextColor" label="Text Color" />
-                <SettingsColorItem v-model="layoutStore.itemTextBackgroundColor" label="Background Color" />
-                <SettingsSliderItem
-                  v-model="layoutStore.itemTextBackgroundOpacityByte"
-                  label="Background Opacity"
-                  :min="0"
-                  :max="255"
-                />
               </div>
             </Fieldset>
           </div>

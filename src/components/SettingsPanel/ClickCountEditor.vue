@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
-import ColorPicker from 'primevue/colorpicker'
 import Checkbox from 'primevue/checkbox'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { computed, ref, watchEffect } from 'vue'
 
 import type { ClickCountEntry } from '@/types/ClickCountEntry'
+import ColorPickerPopup from './ColorPickerPopup.vue'
 
 const props = defineProps<{
   items: ClickCountEntry[]
@@ -104,7 +104,7 @@ const isModified = computed(() => {
 <template>
   <DataTable :key="itemKey" :value="mutableItems" @rowReorder="onRowReorder">
     <Column rowReorder headerStyle="width: 3rem" />
-    <Column header="Set Default">
+    <Column header="Set As Default">
       <template #body="slotProps">
         <Button
           v-show="slotProps.data.id !== 0"
@@ -116,10 +116,10 @@ const isModified = computed(() => {
         />
       </template>
     </Column>
-    <Column header="Id" field="id" />
+    <Column header="Value" field="id" />
     <Column header="Color">
       <template #body="slotProps">
-        <ColorPicker v-model="slotProps.data.color" />
+        <ColorPickerPopup v-model="slotProps.data.color" />
       </template>
     </Column>
     <Column header="Counts Towards Total">
@@ -129,7 +129,14 @@ const isModified = computed(() => {
     </Column>
     <Column header="Actions">
       <template #body="slotProps">
-        <Button icon="pi pi-trash" severity="danger" text aria-label="Clear" @click="deleteItem(slotProps.index)" />
+        <Button
+          v-tooltip="'Delete Row'"
+          icon="pi pi-trash"
+          severity="danger"
+          text
+          aria-label="Clear"
+          @click="deleteItem(slotProps.index)"
+        />
       </template>
     </Column>
     <template #footer>
