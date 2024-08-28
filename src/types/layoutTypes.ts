@@ -81,3 +81,24 @@ export const AnchorLocations = [
 ] as const
 export const AnchorLocationValues = AnchorLocations.map((x) => x.value)
 export type AnchorLocation = (typeof AnchorLocationValues)[number]
+
+export const TotalDisplayTypes = [
+  {
+    label: 'Hidden',
+    value: 'hidden',
+  },
+  {
+    label: 'Single Total',
+    value: 'single-total',
+  },
+  {
+    label: 'Individual Counts',
+    value: 'individual-counts',
+  },
+  {
+    label: 'Both',
+    value: 'both',
+  },
+] as const
+export const TotalDisplayTypeValues = TotalDisplayTypes.map((x) => x.value)
+export type TotalDisplayType = (typeof TotalDisplayTypeValues)[number]

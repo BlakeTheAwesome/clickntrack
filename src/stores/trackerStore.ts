@@ -4,6 +4,7 @@ import type { ClickCountEntry } from '@/types/ClickCountEntry'
 import type { TrackerItem } from '@/types/trackerItem'
 import { shuffle } from '@/scripts/randomUtils'
 import pokemonList from '@/assets/pokemon-list.json'
+import type { TotalDisplayType } from '@/types/layoutTypes'
 
 type ItemState = { clickCount: number; marked: boolean }
 type IdState = Record<number, ItemState>
@@ -26,6 +27,9 @@ function newItem(): ItemState {
 export const useTrackerStore = defineStore('tracker', () => {
   const idState = ref<IdState>({})
   const colours = ref(defaultColours)
+  const filterTextColor = ref('#666666')
+  const totalTextColor = ref('#992222')
+  const totalDisplayType = ref<TotalDisplayType>('single-total')
 
   const numItems = ref(151)
   const seed = ref('')
@@ -45,13 +49,34 @@ export const useTrackerStore = defineStore('tracker', () => {
   const minClickCount = computed(() => colours.value[0]?.id ?? 0)
   const maxClickCount = computed(() => colours.value.at(-1)?.id ?? 0)
   const clickCountMap = computed(() => new Map(colours.value.map((x) => [x.id, x])))
-  const totalCount = computed(() => {
+  const clickTotalsMap = computed(() => {
+    const ret: Record<number, { total: number; info: ClickCountEntry }> = {}
+    for (const entry of clickCountMap.value.values()) {
+      if (entry.countsTowardsTotal) {
+        ret[entry.id] = { total: 0, info: entry }
+      }
+    }
+
     const clickMap = clickCountMap.value
-    let count = 0
     for (const state of Object.values(idState.value)) {
-      const clickInfo = clickMap.get(state.clickCount)
-      const increment = clickInfo?.countsTowardsTotal ? 1 : 0
-      count += increment
+      const entry = ret[state.clickCount]
+      if (!entry) {
+        if (!clickMap.has(state.clickCount)) {
+          console.warn(`Unexpected click value: state.clickCount`)
+        }
+        continue
+      }
+
+      entry.total++
+    }
+    return ret
+  })
+
+  const totalCount = computed(() => {
+    const totalsMap = clickTotalsMap.value
+    let count = 0
+    for (const entry of Object.values(totalsMap)) {
+      count += entry.total
     }
     return count
   })
@@ -117,8 +142,12 @@ export const useTrackerStore = defineStore('tracker', () => {
     clearTracker,
     initTracker,
     colours,
+    clickTotalsMap,
     totalCount,
     gridItems,
     allGridItems,
+    filterTextColor,
+    totalTextColor,
+    totalDisplayType,
   }
 })

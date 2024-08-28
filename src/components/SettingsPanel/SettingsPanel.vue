@@ -10,7 +10,7 @@ import Fieldset from 'primevue/fieldset'
 import Divider from 'primevue/divider'
 
 import { useLayoutStore } from '@/stores/layoutStore'
-import { Layouts, ItemShapes, DisplayTypes, AnchorLocations } from '@/types/layoutTypes'
+import { Layouts, ItemShapes, DisplayTypes, AnchorLocations, TotalDisplayTypes } from '@/types/layoutTypes'
 import { useTrackerStore } from '@/stores/trackerStore'
 
 import ClickCountEditor from './ClickCountEditor.vue'
@@ -54,6 +54,12 @@ For example if item count is 15, but available item count is 1000 items defined,
 - The first 15 items being shuffled
 
 - All 1000 items being shuffled and then 15 selected`
+
+const keywordFilterHelpText = `This is the character to type before a keyword in order to search for it.
+
+For example, if this is set to the default value ':', then typing ':fire' will search for the keyword 'fire'.
+
+If set to an empty string, all words will be treated as both keywords and names.`
 </script>
 
 <template>
@@ -122,14 +128,22 @@ For example if item count is 15, but available item count is 1000 items defined,
                 />
               </div>
             </Fieldset>
-            <Fieldset legend="Other Settings" :toggleable="true">
+            <Fieldset legend="Search Settings" :toggleable="true">
               <div class="sp-fields">
+                <SettingsColorItem v-model="trackerStore.filterTextColor" label="Search Text Color" />
                 <SettingsTextItem
                   v-model="layoutStore.keywordPrefix"
-                  label="Keyword Prefix (default ':')"
+                  label="Keyword Prefix"
                   placeholder="<none>"
                   maxlength="1"
+                  :helpText="keywordFilterHelpText"
                 />
+            </div>
+            </Fieldset>
+            <Fieldset legend="Totals Settings" :toggleable="true">
+              <div class="sp-fields">
+                <SettingsSelectItem v-model="trackerStore.totalDisplayType" label="Total Display Type" :items="TotalDisplayTypes" helpText="This controls the 'total' field in the bottom right. Single Total adds up all the marked items, whereas Individual Counts shows a total for each color."/>
+                <SettingsColorItem v-model="trackerStore.totalTextColor" label="Total Text Color" />
             </div>
             </Fieldset>
           </div>
