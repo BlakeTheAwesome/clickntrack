@@ -13,21 +13,25 @@ defineOptions({
 </script>
 
 <template>
-  <div class="sp-item-row">
-    <span>{{ label }}</span>
-    <Checkbox v-model="modelValue" class="sp-control" :binary="true" v-bind="$attrs" />
+  <div class="sci-item-row">
+    <span class="sci-label">{{ label }}</span>
+    <Checkbox v-model="modelValue" class="sci-control" :binary="true" v-bind="$attrs" />
   </div>
 </template>
 
 <style scoped lang="postcss">
-.sp-item-row {
+.sci-item-row {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
 }
 
-.sp-control {
+.sci-label {
+  width: 30%;
+}
+
+.sci-control {
   flex-grow: 1;
 }
 </style>

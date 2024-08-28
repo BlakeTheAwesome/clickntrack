@@ -22,7 +22,7 @@ defineOptions({
 <style scoped lang="postcss">
 .sp-button-row {
   display: grid;
-  justify-items: center;
+  justify-items: stretch;
   gap: 0.5rem;
 }
 </style>

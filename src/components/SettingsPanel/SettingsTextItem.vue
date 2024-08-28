@@ -13,21 +13,25 @@ defineOptions({
 </script>
 
 <template>
-  <div class="sp-item-row">
-    <span>{{ label }}</span>
-    <InputText v-model="modelValue" class="sp-control" v-bind="$attrs" />
+  <div class="sti-item-row">
+    <span class="sti-label">{{ label }}</span>
+    <InputText v-model="modelValue" class="sti-control" v-bind="$attrs" />
   </div>
 </template>
 
 <style scoped lang="postcss">
-.sp-item-row {
+.sti-item-row {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
 }
 
-.sp-control {
+.sti-label {
+  width: 30%;
+}
+
+.sti-control {
   flex-grow: 1;
 }
 </style>

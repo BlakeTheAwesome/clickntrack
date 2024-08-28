@@ -19,18 +19,29 @@ defineOptions({
 </script>
 
 <template>
-  <div class="sp-item-row">
-    <span>{{ label }}</span>
-    <Select v-model="modelValue" :options="items" optionLabel="label" optionValue="value" v-bind="$attrs" />
+  <div class="ssi-item-row">
+    <span class="ssi-label">{{ label }}</span>
+    <Select
+      v-model="modelValue"
+      :options="items"
+      optionLabel="label"
+      optionValue="value"
+      class="sp-control"
+      v-bind="$attrs"
+    />
   </div>
 </template>
 
 <style scoped lang="postcss">
-.sp-item-row {
+.ssi-item-row {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+}
+
+.ssi-label {
+  width: 30%;
 }
 
 .sp-control {
