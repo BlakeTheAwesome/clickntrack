@@ -1,5 +1,5 @@
 import { computed, reactive, ref } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, type StoreState } from 'pinia'
 import type { ClickCountEntry } from '@/types/ClickCountEntry'
 import type { TrackerItem } from '@/types/trackerItem'
 import { shuffle } from '@/scripts/randomUtils'
@@ -130,17 +130,55 @@ export const useTrackerStore = defineStore('tracker', () => {
     }
   }
 
+  type TrackerStoreState = StoreState<ReturnType<typeof useTrackerStore>>
+  function exportToJsonObj() {
+    const store = useTrackerStore()
+    const fieldsToOmit = ['idState']
+    // cloning state using JSON.stringify as structured clone doesn't
+    // work with store state
+    const state = JSON.parse(JSON.stringify(store.$state)) as Record<string, unknown>
+    for (const field of fieldsToOmit) {
+      delete state[field]
+    }
+
+    const storeObj = {
+      [store.$id]: state,
+    } as const
+    return storeObj
+  }
+
+  function importFromJsonObj(obj: Record<string, unknown>) {
+    try {
+      const store = useTrackerStore()
+      if (!(store.$id in obj)) {
+        return
+      }
+      const state = obj[store.$id] as Partial<TrackerStoreState> | undefined
+      if (!state) {
+        return
+      }
+      store.$patch(state)
+      store.clearTracker()
+    } catch (err) {
+      throw new Error('Unable to load tracker store from string', {
+        cause: err,
+      })
+    }
+  }
+
   return {
     getClickInfo,
     incrementClickCount,
     decrementClickCount,
     toggleMarked,
+    clearTracker,
+    initTracker,
+    exportToJsonObj,
+    importFromJsonObj,
     idState,
     numItems,
     seed,
     shuffleItems,
-    clearTracker,
-    initTracker,
     colours,
     clickTotalsMap,
     totalCount,

@@ -21,6 +21,7 @@ import SettingsColorItem from './SettingsColorItem.vue'
 import SettingsSelectItem from './SettingsSelectItem.vue'
 import SettingsSliderItem from './SettingsSliderItem.vue'
 import SettingsButtonItem from './SettingsButtonItem.vue'
+import ImportExportPanel from '@/components/SettingsPanel/ImportExportPanel.vue'
 
 const emit = defineEmits<{
   openItemSetEditor: []
@@ -69,6 +70,7 @@ If set to an empty string, all words will be treated as both keywords and names.
         <Tab value="board">Board Setup</Tab>
         <Tab value="items">Item Setup</Tab>
         <Tab value="clicks">Click Setup</Tab>
+        <Tab value="import-export">Import/Export</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="board">
@@ -174,6 +176,7 @@ If set to an empty string, all words will be treated as both keywords and names.
             </p>
             <SettingsSelectItem v-model="layoutStore.displayType" label="Display Type" :items="DisplayTypes" />
             <SettingsCheckboxItem v-model="layoutStore.showTooltips" label="Show Tooltips" />
+            <Divider />
             <Fieldset v-if="showImageSettings" legend="Image Settings" :toggleable="true">
               <div class="sp-fields">
                 <SettingsNumberItem
@@ -185,7 +188,7 @@ If set to an empty string, all words will be treated as both keywords and names.
                   showButtons
                   helpText="How much space to leave between the image and the border. A negative margin can make an image appear larger."
                 />
-                <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" />
+                <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" helpText="This controls whether the click color overlay is in front of or behind the image. If your images cover the entire tile, you will want this checked."/>
               </div>
             </Fieldset>
             <Fieldset v-if="showTextSettings" legend="Text Settings" :toggleable="true">
@@ -209,7 +212,6 @@ If set to an empty string, all words will be treated as both keywords and names.
                 />
               </div>
             </Fieldset>
-            <Divider />
             <Fieldset legend="Mark" :toggleable="true">
               <div class="sp-fields">
                 <p class="sp-setting-description">
@@ -239,6 +241,9 @@ If set to an empty string, all words will be treated as both keywords and names.
               </div>
             </Fieldset>
           </div>
+        </TabPanel>
+        <TabPanel value="import-export">
+          <ImportExportPanel />
         </TabPanel>
       </TabPanels>
     </Tabs>
