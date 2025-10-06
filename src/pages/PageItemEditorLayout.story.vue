@@ -22,6 +22,6 @@ const gridItems = ref(trackerStore.allGridItems)
 
 <template>
   <Story>
-    <StoryComponent v-model:grid-items="gridItems" :presets="presets" v-on="logEmits(StoryComponent)" />
+    <StoryComponent v-model:gridItems="gridItems" :presets="presets" v-on="logEmits(StoryComponent)" />
   </Story>
 </template>

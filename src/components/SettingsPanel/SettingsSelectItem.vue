@@ -27,7 +27,7 @@ defineOptions({
     </div>
     <Select
       v-model="modelValue"
-      :options="items"
+      :options="items as SelectItem[]"
       optionLabel="label"
       optionValue="value"
       class="ssi-grow"

@@ -36,13 +36,13 @@ function updateIds(newZeroIndex?: number) {
   }
 
   for (let i = 0; i < mutableItems.value.length; i++) {
-    mutableItems.value[i].id = i - zeroIndex
+    mutableItems.value[i]!.id = i - zeroIndex
   }
 }
 
 function onRowReorder(event: { dragIndex: number; dropIndex: number }) {
   const [dragItem] = mutableItems.value.splice(event.dragIndex, 1)
-  mutableItems.value.splice(event.dropIndex, 0, dragItem)
+  mutableItems.value.splice(event.dropIndex, 0, dragItem!)
   updateIds()
 }
 
@@ -86,13 +86,15 @@ const isModified = computed(() => {
   }
 
   for (let i = 0; i < mutableItems.value.length; i++) {
-    if (mutableItems.value[i].id !== props.items[i].id) {
+    const current = mutableItems.value[i]!
+    const original = props.items[i]!
+    if (current.id !== original.id) {
       return true
     }
-    if (mutableItems.value[i].color !== props.items[i].color) {
+    if (current.color !== original.color) {
       return true
     }
-    if (mutableItems.value[i].countsTowardsTotal !== props.items[i].countsTowardsTotal) {
+    if (current.countsTowardsTotal !== original.countsTowardsTotal) {
       return true
     }
   }

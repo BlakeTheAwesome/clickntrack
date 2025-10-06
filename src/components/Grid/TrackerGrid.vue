@@ -3,7 +3,9 @@ import { computed } from 'vue'
 import GridIcon from './GridIcon.vue'
 import { getIdsToFilterOut } from '@/scripts/filterUtils'
 import type { TrackerItem } from '@/types/trackerItem'
-import { type Layout, useLayoutStore } from '@/stores/layoutStore'
+import { useLayoutStore } from '@/stores/layoutStore'
+import type { Layout } from '@/types/layoutTypes'
+
 const layoutStore = useLayoutStore()
 
 // Add a 'search key' prop here
@@ -49,10 +51,10 @@ const rows = computed<ItemRow[]>(() => {
       radius++
       const numToAdd = Math.min(placeholderRows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        placeholderRows[i].push(placeholders.shift() as PlaceholderItem)
+        placeholderRows[i]!.push(placeholders.shift() as PlaceholderItem)
       }
       for (let i = numToAdd; i < placeholderRows.length; i++) {
-        placeholderRows[i].push(null)
+        placeholderRows[i]!.push(null)
       }
     }
 
@@ -81,10 +83,10 @@ const rows = computed<ItemRow[]>(() => {
       radius++
       const numToAdd = Math.min(placeholderRows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
-        placeholderRows[i].push(placeholders.shift() as PlaceholderItem)
+        placeholderRows[i]!.push(placeholders.shift() as PlaceholderItem)
       }
       for (let i = numToAdd; i < placeholderRows.length; i++) {
-        placeholderRows[i].push(null)
+        placeholderRows[i]!.push(null)
       }
     }
 
@@ -147,7 +149,7 @@ const offsetOdd = computed(() => {
   let longestRowIndex = 0
   let numElements = 0
   for (let i = 0; i < rows.value.length; i++) {
-    const row = rows.value[i]
+    const row = rows.value[i]!
     const nonNullCount = row.filter((val) => val !== null).length
     if (nonNullCount >= numElements) {
       longestRowIndex = i

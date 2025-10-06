@@ -96,8 +96,16 @@ If set to an empty string, all words will be treated as both keywords and names.
                   mode="decimal"
                   showButtons
                 />
-                <SettingsTextItem v-model="trackerStore.seed" label="Shuffle Seed" helpText="This setting is used to shuffle the items on the board. When empty, the items will be in the order defined in the editor." />
-                <SettingsCheckboxItem v-model="trackerStore.shuffleItems" label="Shuffle All Items" :helpText="shuffleAllItemsHelpText" />
+                <SettingsTextItem
+                  v-model="trackerStore.seed"
+                  label="Shuffle Seed"
+                  helpText="This setting is used to shuffle the items on the board. When empty, the items will be in the order defined in the editor."
+                />
+                <SettingsCheckboxItem
+                  v-model="trackerStore.shuffleItems"
+                  label="Shuffle All Items"
+                  :helpText="shuffleAllItemsHelpText"
+                />
               </div>
             </Fieldset>
             <Fieldset legend="Board Settings" :toggleable="true">
@@ -140,31 +148,39 @@ If set to an empty string, all words will be treated as both keywords and names.
                   maxlength="1"
                   :helpText="keywordFilterHelpText"
                 />
-            </div>
+              </div>
             </Fieldset>
             <Fieldset legend="Totals Settings" :toggleable="true">
               <div class="sp-fields">
-                <SettingsSelectItem v-model="trackerStore.totalDisplayType" label="Total Display Type" :items="TotalDisplayTypes" helpText="This controls the 'total' field in the bottom right. Single Total adds up all the marked items, whereas Individual Counts shows a total for each color."/>
+                <SettingsSelectItem
+                  v-model="trackerStore.totalDisplayType"
+                  label="Total Display Type"
+                  :items="TotalDisplayTypes"
+                  helpText="This controls the 'total' field in the bottom right. Single Total adds up all the marked items, whereas Individual Counts shows a total for each color."
+                />
                 <SettingsColorItem v-model="trackerStore.totalTextColor" label="Total Text Color" />
-            </div>
+              </div>
             </Fieldset>
           </div>
         </TabPanel>
         <TabPanel value="clicks">
           <div class="sp-tab-content">
-            <p class="sp-setting-description">
+            <span class="sp-setting-description">
               Here you can define the colors that are used when you click on items. <br />
-              Each item starts with a default value (usually 0), and left clicking on the item increases its value, while right clicking decreases the value. <br />
+              Each item starts with a default value (usually 0), and left clicking on the item increases its value,
+              while right clicking decreases the value. <br />
               <br />
               Each column of the table does the following:
               <ul>
                 <li><b>Set Default:</b> Makes this value the default when clearing the board. 0 is probably best.</li>
                 <li><b>Value:</b> The value for that row.</li>
                 <li><b>Color:</b> The color to use for that value.</li>
-                <li><b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.</li>
+                <li>
+                  <b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.
+                </li>
               </ul>
               Remember to <b>Save</b> your changes when you're done.
-            </p>
+            </span>
             <ClickCountEditor v-model:items="trackerStore.colours" />
           </div>
         </TabPanel>
@@ -188,7 +204,11 @@ If set to an empty string, all words will be treated as both keywords and names.
                   showButtons
                   helpText="How much space to leave between the image and the border. A negative margin can make an image appear larger."
                 />
-                <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" helpText="This controls whether the click color overlay is in front of or behind the image. If your images cover the entire tile, you will want this checked."/>
+                <SettingsCheckboxItem
+                  v-model="layoutStore.highlightCoversImage"
+                  label="Highlight Covers Image"
+                  helpText="This controls whether the click color overlay is in front of or behind the image. If your images cover the entire tile, you will want this checked."
+                />
               </div>
             </Fieldset>
             <Fieldset v-if="showTextSettings" legend="Text Settings" :toggleable="true">
@@ -236,7 +256,11 @@ If set to an empty string, all words will be treated as both keywords and names.
                   mode="decimal"
                   showButtons
                 />
-                <SettingsColorItem v-model="layoutStore.markColor" label="Mark Color" helpText="This is the inner color of the mark"/>
+                <SettingsColorItem
+                  v-model="layoutStore.markColor"
+                  label="Mark Color"
+                  helpText="This is the inner color of the mark"
+                />
                 <SettingsColorItem v-model="layoutStore.markShadowColor" label="Mark Shadow Color" />
               </div>
             </Fieldset>
