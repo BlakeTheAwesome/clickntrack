@@ -4,8 +4,6 @@ This is an application for tracking goals while playing goals.
 
 I designed this primarily for use by streamers doing various challenges and races, and is made to be customisable to suit your needs.
 
-Note this is an early release, so some of the settings menus are a bit rough. I plan to clean these up over time.
-
 ![Hex Grid of Pokemon](./docs/pokemon_hex_grid.png)
 
 ![Square Grid of Super Mario 64](./docs/sm64-square-grid.png)

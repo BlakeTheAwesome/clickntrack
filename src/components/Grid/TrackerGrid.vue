@@ -117,8 +117,10 @@ const rows = computed<ItemRow[]>(() => {
   } else {
     const rows: ItemRow[] = []
     const itemsRemaining = [...props.gridItems]
-    for (let i = 0; i < itemsRemaining.length; i += props.gridRowLen) {
-      rows.push(itemsRemaining.slice(i, i + props.gridRowLen))
+
+    const gridRowLen = props.gridRowLen || 1
+    for (let i = 0; i < itemsRemaining.length; i += gridRowLen) {
+      rows.push(itemsRemaining.slice(i, i + gridRowLen))
     }
     return rows
   }

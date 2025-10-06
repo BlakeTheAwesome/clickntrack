@@ -1,15 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-
-export const Layouts = ['Grid', 'Hex'] as const
-export type Layout = (typeof Layouts)[number]
-export const ItemShapes = ['Square', 'Hex'] as const
-export type ItemShape = (typeof ItemShapes)[number]
-export const DisplayTypes = ['Image', 'Text', 'Both'] as const
-export type DisplayType = (typeof DisplayTypes)[number]
-export const TextLocations = ['TL', 'TC', 'TR', 'CL', 'CC', 'CR', 'BL', 'BC', 'BR'] as const
-export type TextLocation = (typeof TextLocations)[number]
-export type MarkLocation = TextLocation
+import type { AnchorLocation, DisplayType, ItemShape, Layout } from '@/types/layoutTypes'
 
 export const useLayoutStore = defineStore('layout', () => {
   const bgColor = ref('#FFFFFF')
@@ -23,8 +14,8 @@ export const useLayoutStore = defineStore('layout', () => {
   const layout = ref<Layout>('Grid')
   const itemShape = ref<ItemShape>('Square')
   const displayType = ref<DisplayType>('Image')
-  const markLocation = ref<MarkLocation>('TL')
-  const textLocation = ref<TextLocation>('CC')
+  const markLocation = ref<AnchorLocation>('TL')
+  const textLocation = ref<AnchorLocation>('CC')
   const gridRowLength = ref(10)
   const imageMargin = ref(0)
   const textMargin = ref(0)
