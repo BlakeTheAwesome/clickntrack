@@ -5,7 +5,7 @@ import SetLayoutStore from '@/components/Debug/SetLayoutStore.vue'
 import { computed } from 'vue'
 const trackerStore = useTrackerStore()
 
-const item = computed(() => trackerStore.gridItems[0])
+const item = computed(() => trackerStore.gridItems[0] ?? null)
 </script>
 
 <template>
