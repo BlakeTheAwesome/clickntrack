@@ -2,9 +2,11 @@
 import { computed } from 'vue'
 import { useTrackerStore } from '@/stores/trackerStore'
 import type { TrackerItem } from '@/types/trackerItem'
-import { useLayoutStore } from '@/stores/layoutStore'
+import { useBoardStore } from '@/stores/boardStore'
+import { useItemDisplayStore } from '@/stores/itemDisplayStore'
 const trackerStore = useTrackerStore()
-const layoutStore = useLayoutStore()
+const boardStore = useBoardStore()
+const itemDisplayStore = useItemDisplayStore()
 
 const props = defineProps<{
   item: TrackerItem | null
@@ -13,7 +15,7 @@ const props = defineProps<{
 }>()
 
 const margins = computed(() => {
-  if (layoutStore.itemShape === 'Square') {
+  if (boardStore.itemShape === 'Square') {
     return '0'
   }
   if (props.offsetRow) {
@@ -29,7 +31,9 @@ const trackerState = computed(() => (itemId.value === null ? null : trackerStore
 const bgCol = computed(() => trackerState.value?.colour ?? 'transparent')
 
 const overlayCol = computed(() =>
-  layoutStore.highlightCoversImage && trackerState.value?.count ? `${trackerState.value?.colour}77` : 'transparent',
+  itemDisplayStore.highlightCoversImage && trackerState.value?.count
+    ? `${trackerState.value?.colour}77`
+    : 'transparent',
 )
 
 const filterOverlayCol = computed(() => (props.item && props.filtered ? 'rgba(0, 0, 0, 0.5)' : 'transparent'))
@@ -52,22 +56,22 @@ function onMiddleClick() {
   }
 }
 
-const layoutClass = computed(() => `layout-${layoutStore.itemShape.toLowerCase()}`)
-const showImage = computed(() => layoutStore.displayType === 'Image' || layoutStore.displayType === 'Both')
-const showText = computed(() => layoutStore.displayType === 'Text' || layoutStore.displayType === 'Both')
+const layoutClass = computed(() => `layout-${boardStore.itemShape.toLowerCase()}`)
+const showImage = computed(() => itemDisplayStore.displayType === 'Image' || itemDisplayStore.displayType === 'Both')
+const showText = computed(() => itemDisplayStore.displayType === 'Text' || itemDisplayStore.displayType === 'Both')
 const showMark = computed(() => trackerState.value?.marked ?? false)
-const markColor = computed(() => layoutStore.markColor)
-const markShadowColor = computed(() => layoutStore.markShadowColor)
-const textColor = computed(() => layoutStore.itemTextColor)
+const markColor = computed(() => itemDisplayStore.markColor)
+const markShadowColor = computed(() => itemDisplayStore.markShadowColor)
+const textColor = computed(() => itemDisplayStore.itemTextColor)
 const textBackgroundColor = computed(
-  () => `${layoutStore.itemTextBackgroundColor}${layoutStore.itemTextBackgroundOpacityByte.toString(16)}`,
+  () => `${itemDisplayStore.itemTextBackgroundColor}${itemDisplayStore.itemTextBackgroundOpacityByte.toString(16)}`,
 )
 const tooltip = computed(() =>
-  layoutStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null,
+  itemDisplayStore.showTooltips && props.item !== null ? props.item.tooltip || props.item.displayName : null,
 )
 
 const markAlign = computed(() => {
-  switch (layoutStore.markLocation) {
+  switch (itemDisplayStore.markLocation) {
     case 'TL':
     case 'TC':
     case 'TR':
@@ -84,7 +88,7 @@ const markAlign = computed(() => {
   throw new Error('Invalid text location')
 })
 const markJustify = computed(() => {
-  switch (layoutStore.markLocation) {
+  switch (itemDisplayStore.markLocation) {
     case 'TL':
     case 'CL':
     case 'BL':
@@ -102,7 +106,7 @@ const markJustify = computed(() => {
 })
 
 const textAlign = computed(() => {
-  switch (layoutStore.textLocation) {
+  switch (itemDisplayStore.textLocation) {
     case 'TL':
     case 'TC':
     case 'TR':
@@ -119,7 +123,7 @@ const textAlign = computed(() => {
   throw new Error('Invalid text location')
 })
 const textJustify = computed(() => {
-  switch (layoutStore.textLocation) {
+  switch (itemDisplayStore.textLocation) {
     case 'TL':
     case 'CL':
     case 'BL':
@@ -136,21 +140,21 @@ const textJustify = computed(() => {
   throw new Error('Invalid text location')
 })
 const textMargins = computed(() => {
-  if (layoutStore.itemShape === 'Square') {
-    return `${layoutStore.textMargin}px`
+  if (boardStore.itemShape === 'Square') {
+    return `${itemDisplayStore.textMargin}px`
   }
-  return `25% ${layoutStore.textMargin}px`
+  return `25% ${itemDisplayStore.textMargin}px`
 })
 const markMargins = computed(() => {
-  if (layoutStore.itemShape === 'Square') {
-    return `${layoutStore.markMargin}px`
+  if (boardStore.itemShape === 'Square') {
+    return `${itemDisplayStore.markMargin}px`
   }
-  return `25% ${layoutStore.markMargin}px`
+  return `25% ${itemDisplayStore.markMargin}px`
 })
-const textSize = computed(() => `${layoutStore.textSize}px`)
-const markSize = computed(() => `${layoutStore.markSize}px`)
+const textSize = computed(() => `${itemDisplayStore.textSize}px`)
+const markSize = computed(() => `${itemDisplayStore.markSize}px`)
 
-const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
+const imageMargins = computed(() => `${itemDisplayStore.imageMargin}px`)
 </script>
 
 <template>
@@ -171,7 +175,7 @@ const imageMargins = computed(() => `${layoutStore.imageMargin}px`)
         {{ item.overlayText ?? item.displayName }}
       </div>
       <div v-if="showMark" class="gi-mark">
-        {{ layoutStore.markText }}
+        {{ itemDisplayStore.markText }}
       </div>
       <div class="overlay" />
       <div class="filter-overlay" />

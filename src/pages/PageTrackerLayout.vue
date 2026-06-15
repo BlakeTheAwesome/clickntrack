@@ -12,7 +12,7 @@ import TrackerStatus from '@/components/TrackerStatus.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
 import SettingsPanel from '@/components/SettingsPanel/SettingsPanel.vue'
 
-import { useLayoutStore } from '@/stores/layoutStore'
+import { useBoardStore } from '@/stores/boardStore'
 import type { TrackerItem } from '@/types/trackerItem'
 import { useKeyboardFilter } from '@/scripts/filterUtils'
 
@@ -25,8 +25,8 @@ const emit = defineEmits<{
   clearTracker: []
 }>()
 
-const layoutStore = useLayoutStore()
-const { cellSize, layout, gridRowLength, keywordPrefix } = storeToRefs(layoutStore)
+const boardStore = useBoardStore()
+const { cellSize, layout, gridRowLength, keywordPrefix } = storeToRefs(boardStore)
 
 const { filter, onKeydown } = useKeyboardFilter()
 const confirmDialog = useConfirm()
@@ -36,7 +36,7 @@ function toggleSettings() {
   showSettings.value = !showSettings.value
 }
 
-const bgColor = computed(() => layoutStore.bgColor)
+const bgColor = computed(() => boardStore.bgColor)
 const contentPadding = computed(() => {
   const minPadding = 16
   const padding = Math.max(minPadding, cellSize.value)
@@ -86,7 +86,7 @@ function clearBoard() {
       </HeaderBar>
     </div>
     <div>
-      <Splitter class="pt-splitter">
+      <Splitter :key="String(showSettings)" class="pt-splitter">
         <SplitterPanel :size="75" class="pt-content" tabindex="0" @keydown="onKeydown">
           <div class="pt-grid-area">
             <TrackerGrid
@@ -100,8 +100,8 @@ function clearBoard() {
             <TrackerStatus :filter="filter" />
           </div>
         </SplitterPanel>
-        <SplitterPanel v-if="showSettings" :size="25" :minSize="25">
-          <SettingsPanel class="pt-settings" @openItemSetEditor="emit('openItemEditor')" />
+        <SplitterPanel v-if="showSettings" :size="35" :minSize="25">
+          <SettingsPanel @openItemSetEditor="emit('openItemEditor')" />
         </SplitterPanel>
       </Splitter>
     </div>
@@ -118,11 +118,6 @@ function clearBoard() {
 
   .pt-content {
     background-color: v-bind(bgColor);
-  }
-
-  .pt-settings {
-    position: sticky;
-    top: 0;
   }
 }
 

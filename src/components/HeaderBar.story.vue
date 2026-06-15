@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import type { Vue3StorySetupApi } from '@histoire/plugin-vue'
+import type { App } from 'vue'
 import StoryComponent from './HeaderBar.vue'
 import Button from 'primevue/button'
 import Tooltip from 'primevue/tooltip'
 
 // Workaround for 'tooltip' directive not being found, instead gives us a duplicate directive warning
-function localSetupApp({ app }: Vue3StorySetupApi) {
+// Inline type used because histoire 1.0.0-beta.1 has a mismatch: components.d.ts types setupApp as
+// `{ app, story, variant }` but Vue3StorySetupApi (and defineSetupVue3) still requires `addWrapper`,
+// making them incompatible. Should be replaceable with `defineSetupVue3` from '@histoire/plugin-vue'
+// once that inconsistency is resolved upstream.
+function localSetupApp({ app }: { app: App }) {
   app.directive('tooltip', Tooltip)
 }
 </script>

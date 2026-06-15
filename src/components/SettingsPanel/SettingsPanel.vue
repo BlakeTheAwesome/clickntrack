@@ -9,7 +9,8 @@ import TabPanel from 'primevue/tabpanel'
 import Fieldset from 'primevue/fieldset'
 import Divider from 'primevue/divider'
 
-import { useLayoutStore } from '@/stores/layoutStore'
+import { useBoardStore } from '@/stores/boardStore'
+import { useItemDisplayStore } from '@/stores/itemDisplayStore'
 import { Layouts, ItemShapes, DisplayTypes, AnchorLocations, TotalDisplayTypes } from '@/types/layoutTypes'
 import { useTrackerStore } from '@/stores/trackerStore'
 
@@ -27,11 +28,12 @@ const emit = defineEmits<{
   openItemSetEditor: []
 }>()
 
-const layoutStore = useLayoutStore()
+const boardStore = useBoardStore()
+const itemDisplayStore = useItemDisplayStore()
 const trackerStore = useTrackerStore()
 
 const showTextSettings = computed(() => {
-  switch (layoutStore.displayType) {
+  switch (itemDisplayStore.displayType) {
     case 'Text':
     case 'Both':
       return true
@@ -40,7 +42,7 @@ const showTextSettings = computed(() => {
 })
 
 const showImageSettings = computed(() => {
-  switch (layoutStore.displayType) {
+  switch (itemDisplayStore.displayType) {
     case 'Image':
     case 'Both':
       return true
@@ -65,15 +67,15 @@ If set to an empty string, all words will be treated as both keywords and names.
 
 <template>
   <div class="settings-panel">
-    <Tabs value="board">
+    <Tabs value="clicks">
       <TabList>
+        <Tab value="clicks">Tracker Setup</Tab>
         <Tab value="board">Board Setup</Tab>
         <Tab value="items">Item Setup</Tab>
-        <Tab value="clicks">Click Setup</Tab>
         <Tab value="import-export">Import/Export</Tab>
       </TabList>
       <TabPanels>
-        <TabPanel value="board">
+        <TabPanel value="clicks">
           <div class="sp-tab-content">
             <Fieldset legend="Item Settings" :toggleable="true">
               <div class="sp-fields">
@@ -96,22 +98,37 @@ If set to an empty string, all words will be treated as both keywords and names.
                   mode="decimal"
                   showButtons
                 />
-                <SettingsTextItem v-model="trackerStore.seed" label="Shuffle Seed" helpText="This setting is used to shuffle the items on the board. When empty, the items will be in the order defined in the editor." />
-                <SettingsCheckboxItem v-model="trackerStore.shuffleItems" label="Shuffle All Items" :helpText="shuffleAllItemsHelpText" />
+                <SettingsTextItem
+                  v-model="trackerStore.seed"
+                  label="Shuffle Seed"
+                  helpText="This setting is used to shuffle the items on the board. When empty, the items will be in the order defined in the editor."
+                />
+                <SettingsCheckboxItem
+                  v-model="trackerStore.shuffleItems"
+                  label="Shuffle All Items"
+                  :helpText="shuffleAllItemsHelpText"
+                />
               </div>
             </Fieldset>
+            <Fieldset legend="Color Settings" :toggleable="true">
+              <ClickCountEditor v-model:items="trackerStore.colours" />
+            </Fieldset>
+          </div>
+        </TabPanel>
+        <TabPanel value="board">
+          <div class="sp-tab-content">
             <Fieldset legend="Board Settings" :toggleable="true">
               <div class="sp-fields">
-                <SettingsColorItem v-model="layoutStore.bgColor" label="Background Color" />
+                <SettingsColorItem v-model="boardStore.bgColor" label="Background Color" />
                 <SettingsSelectItem
-                  v-model="layoutStore.layout"
+                  v-model="boardStore.layout"
                   placeholder="Select a layout"
                   label="Board Shape"
                   :items="Layouts"
                 />
-                <template v-if="layoutStore.layout === 'Grid'">
+                <template v-if="boardStore.layout === 'Grid'">
                   <SettingsNumberItem
-                    v-model="layoutStore.gridRowLength"
+                    v-model="boardStore.gridRowLength"
                     label="Items Per Row"
                     :min="1"
                     :max="1000"
@@ -119,9 +136,9 @@ If set to an empty string, all words will be treated as both keywords and names.
                     showButtons
                   />
                 </template>
-                <SettingsSelectItem v-model="layoutStore.itemShape" label="Item Shape" :items="ItemShapes" />
+                <SettingsSelectItem v-model="boardStore.itemShape" label="Item Shape" :items="ItemShapes" />
                 <SettingsNumberItem
-                  v-model="layoutStore.cellSize"
+                  v-model="boardStore.cellSize"
                   label="Item Size"
                   :min="1"
                   :max="1000"
@@ -132,40 +149,27 @@ If set to an empty string, all words will be treated as both keywords and names.
             </Fieldset>
             <Fieldset legend="Search Settings" :toggleable="true">
               <div class="sp-fields">
-                <SettingsColorItem v-model="trackerStore.filterTextColor" label="Search Text Color" />
+                <SettingsColorItem v-model="boardStore.filterTextColor" label="Search Text Color" />
                 <SettingsTextItem
-                  v-model="layoutStore.keywordPrefix"
+                  v-model="boardStore.keywordPrefix"
                   label="Keyword Prefix"
                   placeholder="<none>"
                   maxlength="1"
                   :helpText="keywordFilterHelpText"
                 />
-            </div>
+              </div>
             </Fieldset>
             <Fieldset legend="Totals Settings" :toggleable="true">
               <div class="sp-fields">
-                <SettingsSelectItem v-model="trackerStore.totalDisplayType" label="Total Display Type" :items="TotalDisplayTypes" helpText="This controls the 'total' field in the bottom right. Single Total adds up all the marked items, whereas Individual Counts shows a total for each color."/>
-                <SettingsColorItem v-model="trackerStore.totalTextColor" label="Total Text Color" />
-            </div>
+                <SettingsSelectItem
+                  v-model="boardStore.totalDisplayType"
+                  label="Total Display Type"
+                  :items="TotalDisplayTypes"
+                  helpText="This controls the 'total' field in the bottom right. Single Total adds up all the marked items, whereas Individual Counts shows a total for each color."
+                />
+                <SettingsColorItem v-model="boardStore.totalTextColor" label="Total Text Color" />
+              </div>
             </Fieldset>
-          </div>
-        </TabPanel>
-        <TabPanel value="clicks">
-          <div class="sp-tab-content">
-            <p class="sp-setting-description">
-              Here you can define the colors that are used when you click on items. <br />
-              Each item starts with a default value (usually 0), and left clicking on the item increases its value, while right clicking decreases the value. <br />
-              <br />
-              Each column of the table does the following:
-              <ul>
-                <li><b>Set Default:</b> Makes this value the default when clearing the board. 0 is probably best.</li>
-                <li><b>Value:</b> The value for that row.</li>
-                <li><b>Color:</b> The color to use for that value.</li>
-                <li><b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.</li>
-              </ul>
-              Remember to <b>Save</b> your changes when you're done.
-            </p>
-            <ClickCountEditor v-model:items="trackerStore.colours" />
           </div>
         </TabPanel>
         <TabPanel value="items">
@@ -174,13 +178,13 @@ If set to an empty string, all words will be treated as both keywords and names.
               The Display Type setting controls what is shown for each grid item. The options are 'Image' to show the
               image associated with that item, 'Text' to show the item label, or 'Both' to show both.
             </p>
-            <SettingsSelectItem v-model="layoutStore.displayType" label="Display Type" :items="DisplayTypes" />
-            <SettingsCheckboxItem v-model="layoutStore.showTooltips" label="Show Tooltips" />
+            <SettingsSelectItem v-model="itemDisplayStore.displayType" label="Display Type" :items="DisplayTypes" />
+            <SettingsCheckboxItem v-model="itemDisplayStore.showTooltips" label="Show Tooltips" />
             <Divider />
             <Fieldset v-if="showImageSettings" legend="Image Settings" :toggleable="true">
               <div class="sp-fields">
                 <SettingsNumberItem
-                  v-model="layoutStore.imageMargin"
+                  v-model="itemDisplayStore.imageMargin"
                   label="Image Margin"
                   :min="-1000"
                   :max="1000"
@@ -188,24 +192,32 @@ If set to an empty string, all words will be treated as both keywords and names.
                   showButtons
                   helpText="How much space to leave between the image and the border. A negative margin can make an image appear larger."
                 />
-                <SettingsCheckboxItem v-model="layoutStore.highlightCoversImage" label="Highlight Covers Image" helpText="This controls whether the click color overlay is in front of or behind the image. If your images cover the entire tile, you will want this checked."/>
+                <SettingsCheckboxItem
+                  v-model="itemDisplayStore.highlightCoversImage"
+                  label="Highlight Covers Image"
+                  helpText="This controls whether the click color overlay is in front of or behind the image. If your images cover the entire tile, you will want this checked."
+                />
               </div>
             </Fieldset>
             <Fieldset v-if="showTextSettings" legend="Text Settings" :toggleable="true">
               <div class="sp-fields">
-                <SettingsSelectItem v-model="layoutStore.textLocation" label="Text Position" :items="AnchorLocations" />
+                <SettingsSelectItem
+                  v-model="itemDisplayStore.textLocation"
+                  label="Text Position"
+                  :items="AnchorLocations"
+                />
                 <SettingsNumberItem
-                  v-model="layoutStore.textMargin"
+                  v-model="itemDisplayStore.textMargin"
                   label="Text Margin"
                   :min="-100"
                   :max="1000"
                   mode="decimal"
                   showButtons
                 />
-                <SettingsColorItem v-model="layoutStore.itemTextColor" label="Text Color" />
-                <SettingsColorItem v-model="layoutStore.itemTextBackgroundColor" label="Background Color" />
+                <SettingsColorItem v-model="itemDisplayStore.itemTextColor" label="Text Color" />
+                <SettingsColorItem v-model="itemDisplayStore.itemTextBackgroundColor" label="Background Color" />
                 <SettingsSliderItem
-                  v-model="layoutStore.itemTextBackgroundOpacityByte"
+                  v-model="itemDisplayStore.itemTextBackgroundOpacityByte"
                   label="Background Opacity"
                   :min="0"
                   :max="255"
@@ -218,10 +230,14 @@ If set to an empty string, all words will be treated as both keywords and names.
                   You can middle-click on items to mark them with an icon (default: ★), which is separate to the
                   click-count. This can be used for tracking goals, before you've achieved them.
                 </p>
-                <SettingsTextItem v-model="layoutStore.markText" label="Mark Icon" />
-                <SettingsSelectItem v-model="layoutStore.markLocation" label="Mark Position" :items="AnchorLocations" />
+                <SettingsTextItem v-model="itemDisplayStore.markText" label="Mark Icon" />
+                <SettingsSelectItem
+                  v-model="itemDisplayStore.markLocation"
+                  label="Mark Position"
+                  :items="AnchorLocations"
+                />
                 <SettingsNumberItem
-                  v-model="layoutStore.markSize"
+                  v-model="itemDisplayStore.markSize"
                   label="Mark Size"
                   :min="1"
                   :max="100"
@@ -229,15 +245,19 @@ If set to an empty string, all words will be treated as both keywords and names.
                   showButtons
                 />
                 <SettingsNumberItem
-                  v-model="layoutStore.markMargin"
+                  v-model="itemDisplayStore.markMargin"
                   label="Mark Margin"
                   :min="-100"
                   :max="1000"
                   mode="decimal"
                   showButtons
                 />
-                <SettingsColorItem v-model="layoutStore.markColor" label="Mark Color" helpText="This is the inner color of the mark"/>
-                <SettingsColorItem v-model="layoutStore.markShadowColor" label="Mark Shadow Color" />
+                <SettingsColorItem
+                  v-model="itemDisplayStore.markColor"
+                  label="Mark Color"
+                  helpText="This is the inner color of the mark"
+                />
+                <SettingsColorItem v-model="itemDisplayStore.markShadowColor" label="Mark Shadow Color" />
               </div>
             </Fieldset>
           </div>
@@ -251,11 +271,17 @@ If set to an empty string, all words will be treated as both keywords and names.
 </template>
 
 <style scoped lang="postcss">
+:deep(.p-tab) {
+  flex: 1;
+  justify-content: center;
+}
+
 .sp-tab-content {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
+  overflow-x: auto;
 }
 
 .sp-fields {

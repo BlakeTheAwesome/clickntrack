@@ -3,8 +3,10 @@ import { computed } from 'vue'
 import GridIcon from './GridIcon.vue'
 import { getIdsToFilterOut } from '@/scripts/filterUtils'
 import type { TrackerItem } from '@/types/trackerItem'
-import { type Layout, useLayoutStore } from '@/stores/layoutStore'
-const layoutStore = useLayoutStore()
+import { useBoardStore } from '@/stores/boardStore'
+import type { Layout } from '@/types/layoutTypes'
+
+const boardStore = useBoardStore()
 
 // Add a 'search key' prop here
 const props = defineProps<{
@@ -78,7 +80,6 @@ const rows = computed<ItemRow[]>(() => {
 
     // Fill along the right again
     if (placeholders.length > 0) {
-      radius++
       const numToAdd = Math.min(placeholderRows.length, placeholders.length)
       for (let i = 0; i < numToAdd; i++) {
         placeholderRows[i].push(placeholders.shift() as PlaceholderItem)
@@ -129,7 +130,7 @@ const rows = computed<ItemRow[]>(() => {
 const padding = computed(() => {
   const basePadding = 2
   const hexPadding = Math.ceil(basePadding * 0.75) + 1
-  switch (layoutStore.itemShape) {
+  switch (boardStore.itemShape) {
     case 'Hex':
       return `${basePadding}px ${hexPadding}px`
     case 'Square':
@@ -183,7 +184,7 @@ const filteredIds = computed(() => {
 const cellSizeStr = computed(() => `${props.cellSize}px`)
 
 const margins = computed(() => {
-  if (layoutStore.itemShape === 'Square') {
+  if (boardStore.itemShape === 'Square') {
     return '0'
   }
   const halfCellSize = Math.floor(props.cellSize / 2)

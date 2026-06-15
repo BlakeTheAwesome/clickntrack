@@ -74,7 +74,14 @@ async function parseJsonFile(file: File): Promise<TrackerItem[]> {
       }
 
       try {
-        resolve(JSON.parse(event.target.result as string) as TrackerItem[])
+        const parsed: unknown = JSON.parse(event.target.result as string)
+        if (Array.isArray(parsed)) {
+          resolve(parsed as TrackerItem[])
+        } else if (typeof parsed === 'object' && parsed !== null && 'itemSet' in parsed) {
+          resolve((parsed as { itemSet: TrackerItem[] }).itemSet)
+        } else {
+          reject(new Error('File does not contain an item set'))
+        }
       } catch (err) {
         reject(asError(err))
       }
@@ -87,7 +94,7 @@ async function parseJsonFile(file: File): Promise<TrackerItem[]> {
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 presetFileDialog.onChange(async (files) => {
   try {
-    if (files) {
+    if (files && files[0]) {
       const file = files[0]
       const json = await parseJsonFile(file)
       loadPreset(json)

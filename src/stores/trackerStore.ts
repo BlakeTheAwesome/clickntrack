@@ -4,7 +4,6 @@ import type { ClickCountEntry } from '@/types/ClickCountEntry'
 import type { TrackerItem } from '@/types/trackerItem'
 import { shuffle } from '@/scripts/randomUtils'
 import pokemonList from '@/assets/pokemon-list.json'
-import type { TotalDisplayType } from '@/types/layoutTypes'
 
 type ItemState = { clickCount: number; marked: boolean }
 type IdState = Record<number, ItemState>
@@ -27,9 +26,6 @@ function newItem(): ItemState {
 export const useTrackerStore = defineStore('tracker', () => {
   const idState = ref<IdState>({})
   const colours = ref(defaultColours)
-  const filterTextColor = ref('#666666')
-  const totalTextColor = ref('#992222')
-  const totalDisplayType = ref<TotalDisplayType>('single-total')
 
   const numItems = ref(151)
   const seed = ref('')
@@ -119,7 +115,7 @@ export const useTrackerStore = defineStore('tracker', () => {
   }
 
   function initTracker(items: readonly TrackerItem[]) {
-    allGridItems.value = structuredClone(items) as TrackerItem[]
+    allGridItems.value = JSON.parse(JSON.stringify(items)) as TrackerItem[]
     clearTracker()
   }
 
@@ -184,8 +180,5 @@ export const useTrackerStore = defineStore('tracker', () => {
     totalCount,
     gridItems,
     allGridItems,
-    filterTextColor,
-    totalTextColor,
-    totalDisplayType,
   }
 })

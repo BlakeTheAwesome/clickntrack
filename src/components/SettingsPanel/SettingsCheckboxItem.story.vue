@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { logEmits } from '@/scripts/histoireUtils'
-import StoryComponent from './SettingsNumberItem.vue'
+import StoryComponent from './SettingsCheckboxItem.vue'
 import { ref } from 'vue'
 
 const val = ref(false)

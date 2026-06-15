@@ -20,19 +20,19 @@ function itemMatchesFilters(item: TrackerItem, namesToMatch: string[], keywordsT
 
   if (matchName) {
     const itemName = item.displayName.toLowerCase()
-    if (namesToMatch.some((x) => itemName.includes(x))) {
-      return true
+    if (!namesToMatch.every((x) => itemName.includes(x))) {
+      return false
     }
   }
 
   if (matchKeyword) {
     const lowerCaseKeywords = item.keywords?.map((x) => x.toLowerCase())
-    if (lowerCaseKeywords && keywordsToMatch.some((x) => stringInKeywords(x, lowerCaseKeywords))) {
-      return true
+    if (lowerCaseKeywords && !keywordsToMatch.every((x) => stringInKeywords(x, lowerCaseKeywords))) {
+      return false
     }
   }
 
-  return false
+  return true
 }
 
 export function getIdsToFilterOut(
