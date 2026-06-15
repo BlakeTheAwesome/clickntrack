@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { useLayoutStore } from '@/stores/layoutStore'
+import { useBoardStore } from '@/stores/boardStore'
+import { useItemDisplayStore } from '@/stores/itemDisplayStore'
 import { onBeforeMount, useAttrs } from 'vue'
-const layoutStore = useLayoutStore()
+const boardStore = useBoardStore()
+const itemDisplayStore = useItemDisplayStore()
 const attrs = useAttrs()
 
 onBeforeMount(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const writableStore = layoutStore as Record<string, any>
+  const writableBoard = boardStore as Record<string, any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const writableItemDisplay = itemDisplayStore as Record<string, any>
   for (const [k, v] of Object.entries(attrs)) {
-    writableStore[k] = v
+    if (k in writableBoard) {
+      writableBoard[k] = v
+    } else if (k in writableItemDisplay) {
+      writableItemDisplay[k] = v
+    }
   }
 })
 </script>

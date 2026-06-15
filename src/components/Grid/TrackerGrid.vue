@@ -3,10 +3,10 @@ import { computed } from 'vue'
 import GridIcon from './GridIcon.vue'
 import { getIdsToFilterOut } from '@/scripts/filterUtils'
 import type { TrackerItem } from '@/types/trackerItem'
-import { useLayoutStore } from '@/stores/layoutStore'
+import { useBoardStore } from '@/stores/boardStore'
 import type { Layout } from '@/types/layoutTypes'
 
-const layoutStore = useLayoutStore()
+const boardStore = useBoardStore()
 
 // Add a 'search key' prop here
 const props = defineProps<{
@@ -130,7 +130,7 @@ const rows = computed<ItemRow[]>(() => {
 const padding = computed(() => {
   const basePadding = 2
   const hexPadding = Math.ceil(basePadding * 0.75) + 1
-  switch (layoutStore.itemShape) {
+  switch (boardStore.itemShape) {
     case 'Hex':
       return `${basePadding}px ${hexPadding}px`
     case 'Square':
@@ -184,7 +184,7 @@ const filteredIds = computed(() => {
 const cellSizeStr = computed(() => `${props.cellSize}px`)
 
 const margins = computed(() => {
-  if (layoutStore.itemShape === 'Square') {
+  if (boardStore.itemShape === 'Square') {
     return '0'
   }
   const halfCellSize = Math.floor(props.cellSize / 2)

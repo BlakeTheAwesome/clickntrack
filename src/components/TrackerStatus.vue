@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useTrackerStore } from '@/stores/trackerStore'
+import { useBoardStore } from '@/stores/boardStore'
 import { computed } from 'vue'
 
 const trackerStore = useTrackerStore()
-const { filterTextColor, totalCount, totalTextColor, clickTotalsMap, totalDisplayType } = storeToRefs(trackerStore)
+const boardStore = useBoardStore()
+const { totalCount, clickTotalsMap } = storeToRefs(trackerStore)
+const { filterTextColor, totalTextColor, totalDisplayType } = storeToRefs(boardStore)
 
 defineProps<{
   filter: string

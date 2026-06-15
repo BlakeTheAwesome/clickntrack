@@ -113,16 +113,14 @@ const isModified = computed(() => {
       <br />
       Items can be 'Counted' which means that they will be added to the total displayed on the board. Default (0) values cannot be counted. <br />
     </p>
-    <p>
-      The settings you can modify for each item are as follows:
-      <ul>
-        <li><b>Color:</b> The color to use for that value.</li>
-        <li><b>Counted:</b> Whether this value is counted towards the total.</li>
-        <li><b>Set Default <span class="pi pi-bullseye"></span>:</b> This is the value that will be used as the default or when clearing the board.</li>
-        <li><b>Delete <span class="pi pi-trash"></span>:</b> Deletes this item.</li>
-      </ul>
-      Changes are not applied until you click the <b>Save</b> button, and can be reverted back to the current settings with the <b>Revert</b> button. <br />
-    </p>
+    <p>The settings you can modify for each item are as follows:</p>
+    <ul>
+      <li><b>Color:</b> The color to use for that value.</li>
+      <li><b>Counted:</b> Whether this value is counted towards the total.</li>
+      <li><b>Set Default <span class="pi pi-bullseye"></span>:</b> This is the value that will be used as the default or when clearing the board.</li>
+      <li><b>Delete <span class="pi pi-trash"></span>:</b> Deletes this item.</li>
+    </ul>
+    <p>Changes are not applied until you click the <b>Save</b> button, and can be reverted back to the current settings with the <b>Revert</b> button.</p>
     <DataTable :key="itemKey" :value="mutableItems" @rowReorder="onRowReorder">
       <Column rowReorder style="width: 3rem" />
       <Column header="Color">
