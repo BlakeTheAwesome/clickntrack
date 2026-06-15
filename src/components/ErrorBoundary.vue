@@ -49,8 +49,8 @@ function clearAndReload() {
     <div class="error-boundary__card">
       <h1 class="error-boundary__title">Something went wrong</h1>
       <p class="error-boundary__message">
-        The app failed to load, likely due to corrupted or unrecognised settings in your browser.
-        You can download a backup of your current settings before clearing them.
+        The app failed to load, likely due to corrupted or unrecognised settings in your browser. You can download a
+        backup of your current settings before clearing them.
       </p>
       <p class="error-boundary__detail">{{ errorMessage }}</p>
       <div class="error-boundary__actions">

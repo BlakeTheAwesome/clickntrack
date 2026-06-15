@@ -30,7 +30,7 @@ function openFilePicker() {
     if (!file) {
       return
     }
-    
+
     const reader = new FileReader()
     reader.onload = (e) => {
       try {

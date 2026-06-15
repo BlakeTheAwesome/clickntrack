@@ -192,7 +192,7 @@ export function getSectionSummary(data: SettingsExport, section: SectionKey): st
       if (!s) {
         return ''
       }
-      
+
       const parts = [`${s.numItems} items`]
       if (s.shuffleItems) parts.push('shuffled')
       if (s.seed) parts.push(`seed: "${s.seed}"`)
