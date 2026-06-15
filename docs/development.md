@@ -8,13 +8,14 @@ The main technologies used in this application are:
 - [Vue 3](https://vuejs.org/) (The application framework)
 - [Pinia](https://pinia.vuejs.org/) (The recommended data store for Vue 3)
 - [PrimeVue](https://primevue.org/) (The component library used)
+- [Zod](https://zod.dev/) (Schema validation, used for import/export)
 - [ESLint](https://eslint.org/) (For code linting)
 - [Prettier](https://prettier.io/) (For code formatting)
 
 ## Project Setup
 
 ### Prerequisites
-Before you start you will need to install the correct Node and npm versions (currently `v18.12.0` and `8.19.2` respectively).
+Before you start you will need to install the correct Node version (currently `v24.13.1`).
 The easiest way to ensure you have the right versions installed and enabled is to use [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm). With `nvm` installed, you can use the `.nvmrc` file in this directory to install the correct versions.
 ```sh
 nvm use
@@ -68,10 +69,6 @@ npm run format
 ```
 
 ## Troubleshooting
-Because data is stored in the browser's local storage, you may run into issues if you change any of the pinia stores without clearing your local storage.
-To clear your local storage (These steps are for Chrome but they're all similar):
-1. Open the developer tools in your browser
-1. Go to the `Application` tab
-1. On the left, under 'Local Storage', select `http://localhost:5173` (or `file://` if running via `index.html`).
-1. On the right should be a set of key/value pairs. Delete those starting with `clickntrack-pinia`.
-1. Refresh the page
+If the app encounters an error on startup (for example because a store schema changed and the saved data no longer matches), it will display a recovery screen. From there you can download a backup of the raw localStorage data or clear it and reload — no need to open DevTools.
+
+If you need to clear localStorage manually (e.g. in a headless environment), all app keys are prefixed with `clickntrack-pinia-`.
