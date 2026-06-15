@@ -1,4 +1,5 @@
 import js from '@eslint/js'
+import globals from 'globals'
 import eslintPluginVue from 'eslint-plugin-vue'
 import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from "eslint-config-prettier";
@@ -14,6 +15,7 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
+      globals: globals.browser,
       parserOptions: {
         parser: tseslint.parser,
         projectService: true,

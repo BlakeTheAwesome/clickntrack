@@ -113,7 +113,7 @@ const gridPresets = computed(() => {
 
 function onRowReorder(event: { dragIndex: number; dropIndex: number }) {
   const [dragItem] = mutableItems.value.splice(event.dragIndex, 1)
-  mutableItems.value.splice(event.dropIndex, 0, dragItem!)
+  mutableItems.value.splice(event.dropIndex, 0, dragItem)
   updateIds()
 }
 
@@ -196,13 +196,13 @@ const availableKeywords = computed<string[]>(() => {
 
 const errorMessage = computed(() => {
   if (editingRows.value.length > 0) {
-    return `Row: ${editingRows.value[0]!.id} is open. Please save or cancel your edits before continuing`
+    return `Row: ${editingRows.value[0].id} is open. Please save or cancel your edits before continuing`
   }
 
   const modifiedItemsVal = mutableItems.value
   const idRowMap = new Map<number, number>()
   for (let i = 0; i < modifiedItemsVal.length; i++) {
-    const item = modifiedItemsVal[i]!
+    const item = modifiedItemsVal[i]
     const id = item.id
     if (idRowMap.has(id)) {
       return `Duplicate id: ${id} on rows ${idRowMap.get(id)} and ${i}`
@@ -228,7 +228,7 @@ function exportJson() {
 
 function updateIds() {
   for (let i = 0; i < mutableItems.value.length; i++) {
-    mutableItems.value[i]!.id = i
+    mutableItems.value[i].id = i
   }
 }
 
