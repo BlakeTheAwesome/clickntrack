@@ -1233,5 +1233,95 @@
     "displayName": "Iron Leaves",
     "keywords": ["Gen9", "Grass", "Psychic"],
     "img": "pokemon/sprites/1010.png"
+  },
+  {
+    "id": 1011,
+    "displayName": "Dipplin",
+    "keywords": ["Gen9", "Grass", "Dragon"],
+    "img": "pokemon/sprites/1011.png"
+  },
+  {
+    "id": 1012,
+    "displayName": "Poltchageist",
+    "keywords": ["Gen9", "Grass", "Ghost"],
+    "img": "pokemon/sprites/1012.png"
+  },
+  {
+    "id": 1013,
+    "displayName": "Sinistcha",
+    "keywords": ["Gen9", "Grass", "Ghost"],
+    "img": "pokemon/sprites/1013.png"
+  },
+  {
+    "id": 1014,
+    "displayName": "Okidogi",
+    "keywords": ["Gen9", "Poison", "Fighting"],
+    "img": "pokemon/sprites/1014.png"
+  },
+  {
+    "id": 1015,
+    "displayName": "Munkidori",
+    "keywords": ["Gen9", "Poison", "Psychic"],
+    "img": "pokemon/sprites/1015.png"
+  },
+  {
+    "id": 1016,
+    "displayName": "Fezandipiti",
+    "keywords": ["Gen9", "Poison", "Fairy"],
+    "img": "pokemon/sprites/1016.png"
+  },
+  {
+    "id": 1017,
+    "displayName": "Ogerpon",
+    "keywords": ["Gen9", "Grass"],
+    "img": "pokemon/sprites/1017.png"
+  },
+  {
+    "id": 1018,
+    "displayName": "Archaludon",
+    "keywords": ["Gen9", "Steel", "Dragon"],
+    "img": "pokemon/sprites/1018.png"
+  },
+  {
+    "id": 1019,
+    "displayName": "Hydrapple",
+    "keywords": ["Gen9", "Grass", "Dragon"],
+    "img": "pokemon/sprites/1019.png"
+  },
+  {
+    "id": 1020,
+    "displayName": "Gouging Fire",
+    "keywords": ["Gen9", "Fire", "Dragon"],
+    "img": "pokemon/sprites/1020.png"
+  },
+  {
+    "id": 1021,
+    "displayName": "Raging Bolt",
+    "keywords": ["Gen9", "Electric", "Dragon"],
+    "img": "pokemon/sprites/1021.png"
+  },
+  {
+    "id": 1022,
+    "displayName": "Iron Boulder",
+    "keywords": ["Gen9", "Rock", "Psychic"],
+    "img": "pokemon/sprites/1022.png"
+  },
+  {
+    "id": 1023,
+    "displayName": "Iron Crown",
+    "keywords": ["Gen9", "Steel", "Psychic"],
+    "img": "pokemon/sprites/1023.png"
+  },
+  {
+    "id": 1024,
+    "displayName": "Terapagos",
+    "keywords": ["Gen9", "Normal"],
+    "img": "pokemon/sprites/1024.png"
+  },
+  {
+    "id": 1025,
+    "displayName": "Pecharunt",
+    "keywords": ["Gen9", "Poison", "Ghost"],
+    "img": "pokemon/sprites/1025.png"
   }
 ]
