@@ -109,22 +109,6 @@ If set to an empty string, all words will be treated as both keywords and names.
               </div>
             </Fieldset>
             <Fieldset legend="Color Settings" :toggleable="true">
-              <p class="sp-setting-description">
-                Here you can define the colors that are used when you click on items. <br />
-                Each item starts with a default value (usually 0), and left clicking on the item increases its value,
-                while right clicking decreases the value. <br />
-                <br />
-                Each column of the table does the following:
-                <ul>
-                  <li><b>Set Default:</b> Makes this value the default when clearing the board. 0 is probably best.</li>
-                  <li><b>Value:</b> The value for that row.</li>
-                  <li><b>Color:</b> The color to use for that value.</li>
-                  <li>
-                    <b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.
-                  </li>
-                </ul>
-                Remember to <b>Save</b> your changes when you're done.
-              </p>
               <ClickCountEditor v-model:items="trackerStore.colours" />
             </Fieldset>
           </div>
@@ -277,11 +261,17 @@ If set to an empty string, all words will be treated as both keywords and names.
 </template>
 
 <style scoped lang="postcss">
+:deep(.p-tab) {
+  flex: 1;
+  justify-content: center;
+}
+
 .sp-tab-content {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
+  overflow-x: auto;
 }
 
 .sp-fields {

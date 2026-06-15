@@ -86,7 +86,7 @@ function clearBoard() {
       </HeaderBar>
     </div>
     <div>
-      <Splitter class="pt-splitter">
+      <Splitter :key="String(showSettings)" class="pt-splitter">
         <SplitterPanel :size="75" class="pt-content" tabindex="0" @keydown="onKeydown">
           <div class="pt-grid-area">
             <TrackerGrid
@@ -100,8 +100,8 @@ function clearBoard() {
             <TrackerStatus :filter="filter" />
           </div>
         </SplitterPanel>
-        <SplitterPanel v-if="showSettings" :size="25" :minSize="25">
-          <SettingsPanel class="pt-settings" @openItemSetEditor="emit('openItemEditor')" />
+        <SplitterPanel v-if="showSettings" :size="35" :minSize="25">
+          <SettingsPanel @openItemSetEditor="emit('openItemEditor')" />
         </SplitterPanel>
       </Splitter>
     </div>
@@ -118,11 +118,6 @@ function clearBoard() {
 
   .pt-content {
     background-color: v-bind(bgColor);
-  }
-
-  .pt-settings {
-    position: sticky;
-    top: 0;
   }
 }
 

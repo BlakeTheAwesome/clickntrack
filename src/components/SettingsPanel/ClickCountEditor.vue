@@ -48,6 +48,7 @@ function onRowReorder(event: { dragIndex: number; dropIndex: number }) {
 
 function setDefaultItem(index: number) {
   updateIds(index)
+  mutableItems.value[index].countsTowardsTotal = false
 }
 
 function deleteItem(index: number) {
@@ -104,73 +105,130 @@ const isModified = computed(() => {
 </script>
 
 <template>
-  <DataTable :key="itemKey" :value="mutableItems" @rowReorder="onRowReorder">
-    <Column rowReorder headerStyle="width: 3rem" />
-    <Column header="Set As Default">
-      <template #body="slotProps">
-        <Button
-          v-show="slotProps.data.id !== 0"
-          icon="pi pi-circle"
-          severity="secondary"
-          text
-          aria-label="Clear"
-          @click="setDefaultItem(slotProps.index)"
-        />
+  <div>
+    <p class="cce-description">
+      Here you can define the colors that are used when you click on items. <br />
+      Each item starts with a default value (0), and left clicking on the item increases its value,
+      while right clicking decreases the value. <br />
+      <br />
+      Items can be 'Counted' which means that they will be added to the total displayed on the board. Default (0) values cannot be counted. <br />
+    </p>
+    <p>
+      The settings you can modify for each item are as follows:
+      <ul>
+        <li><b>Color:</b> The color to use for that value.</li>
+        <li><b>Counted:</b> Whether this value is counted towards the total.</li>
+        <li><b>Set Default <span class="pi pi-bullseye"></span>:</b> This is the value that will be used as the default or when clearing the board.</li>
+        <li><b>Delete <span class="pi pi-trash"></span>:</b> Deletes this item.</li>
+      </ul>
+      Changes are not applied until you click the <b>Save</b> button, and can be reverted back to the current settings with the <b>Revert</b> button. <br />
+    </p>
+    <DataTable :key="itemKey" :value="mutableItems" @rowReorder="onRowReorder">
+      <Column rowReorder style="width: 3rem" />
+      <Column header="Color">
+        <template #body="slotProps">
+          <div class="cce-color-cell">
+            <span class="cce-value">{{ slotProps.data.id }}</span>
+            <ColorPickerPopup v-model="slotProps.data.color" />
+          </div>
+        </template>
+      </Column>
+      <Column header="Counted">
+        <template #body="slotProps">
+          <div class="cce-centered">
+            <Checkbox v-model="slotProps.data.countsTowardsTotal" :binary="true" />
+          </div>
+        </template>
+      </Column>
+      <Column header="Actions">
+        <template #body="slotProps">
+          <div class="cce-actions">
+            <Button
+              v-tooltip="slotProps.data.id === 0 ? 'Default value' : 'Set as default (value 0)'"
+              :icon="'pi pi-bullseye'"
+              :severity="'secondary'"
+              :text="false"
+              :disabled="slotProps.data.id === 0"
+              aria-label="Set as default"
+              @click="setDefaultItem(slotProps.index)"
+            />
+            <Button
+              v-tooltip="'Delete row'"
+              icon="pi pi-trash"
+              severity="danger"
+              text
+              aria-label="Delete"
+              @click="deleteItem(slotProps.index)"
+            />
+          </div>
+        </template>
+      </Column>
+      <template #footer>
+        <div class="cce-footer">
+          <Button icon="pi pi-add" severity="primary" raised aria-label="Add Item" @click="addItem"> Add Item </Button>
+          <div class="spacer" />
+          <Button
+            icon="pi pi-add"
+            severity="danger"
+            raised
+            aria-label="Revert Changes"
+            :disabled="!isModified"
+            @click="revert"
+          >
+            Revert Changes
+          </Button>
+          <Button
+            icon="pi pi-add"
+            severity="success"
+            raised
+            aria-label="Save Changes"
+            :disabled="!isModified"
+            @click="commit"
+          >
+            Save
+          </Button>
+        </div>
       </template>
-    </Column>
-    <Column header="Value" field="id" />
-    <Column header="Color">
-      <template #body="slotProps">
-        <ColorPickerPopup v-model="slotProps.data.color" />
-      </template>
-    </Column>
-    <Column header="Counts Towards Total">
-      <template #body="slotProps">
-        <Checkbox v-model="slotProps.data.countsTowardsTotal" :binary="true" />
-      </template>
-    </Column>
-    <Column header="Actions">
-      <template #body="slotProps">
-        <Button
-          v-tooltip="'Delete Row'"
-          icon="pi pi-trash"
-          severity="danger"
-          text
-          aria-label="Clear"
-          @click="deleteItem(slotProps.index)"
-        />
-      </template>
-    </Column>
-    <template #footer>
-      <div class="cce-footer">
-        <Button icon="pi pi-add" severity="primary" raised aria-label="Add Item" @click="addItem"> Add Item </Button>
-        <div class="spacer" />
-        <Button
-          icon="pi pi-add"
-          severity="danger"
-          raised
-          aria-label="Revert Changes"
-          :disabled="!isModified"
-          @click="revert"
-        >
-          Revert Changes
-        </Button>
-        <Button
-          icon="pi pi-add"
-          severity="success"
-          raised
-          aria-label="Save Changes"
-          :disabled="!isModified"
-          @click="commit"
-        >
-          Save
-        </Button>
-      </div>
-    </template>
-  </DataTable>
+    </DataTable>
+  </div>
 </template>
 
 <style scoped lang="postcss">
+:deep(.p-datatable-column-title) {
+  width: 100%;
+  text-align: center;
+}
+
+.cce-description {
+  margin-top: 0;
+}
+
+.cce-centered {
+  display: flex;
+  justify-content: center;
+}
+
+.cce-color-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cce-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 1.5rem;
+  text-align: right;
+  color: var(--p-text-muted-color);
+  font-size: 0.875rem;
+}
+
+.cce-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
 .cce-footer {
   display: flex;
   gap: 1rem;
