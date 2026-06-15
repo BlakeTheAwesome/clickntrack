@@ -24,7 +24,8 @@
     "rand-seed": "^3.0.0",
     "seedrandom": "^3.0.5",
     "vue": "^3.5.38",
-    "vue-router": "^5.1.0"
+    "vue-router": "^5.1.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

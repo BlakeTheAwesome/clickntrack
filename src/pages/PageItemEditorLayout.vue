@@ -74,7 +74,14 @@ async function parseJsonFile(file: File): Promise<TrackerItem[]> {
       }
 
       try {
-        resolve(JSON.parse(event.target.result as string) as TrackerItem[])
+        const parsed: unknown = JSON.parse(event.target.result as string)
+        if (Array.isArray(parsed)) {
+          resolve(parsed as TrackerItem[])
+        } else if (typeof parsed === 'object' && parsed !== null && 'itemSet' in parsed) {
+          resolve((parsed as { itemSet: TrackerItem[] }).itemSet)
+        } else {
+          reject(new Error('File does not contain an item set'))
+        }
       } catch (err) {
         reject(asError(err))
       }

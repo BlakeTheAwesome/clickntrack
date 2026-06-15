@@ -115,7 +115,7 @@ export const useTrackerStore = defineStore('tracker', () => {
   }
 
   function initTracker(items: readonly TrackerItem[]) {
-    allGridItems.value = structuredClone(items) as TrackerItem[]
+    allGridItems.value = JSON.parse(JSON.stringify(items)) as TrackerItem[]
     clearTracker()
   }
 
