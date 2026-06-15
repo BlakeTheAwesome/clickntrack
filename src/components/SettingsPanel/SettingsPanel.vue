@@ -65,15 +65,15 @@ If set to an empty string, all words will be treated as both keywords and names.
 
 <template>
   <div class="settings-panel">
-    <Tabs value="board">
+    <Tabs value="clicks">
       <TabList>
+        <Tab value="clicks">Tracker Setup</Tab>
         <Tab value="board">Board Setup</Tab>
         <Tab value="items">Item Setup</Tab>
-        <Tab value="clicks">Click Setup</Tab>
         <Tab value="import-export">Import/Export</Tab>
       </TabList>
       <TabPanels>
-        <TabPanel value="board">
+        <TabPanel value="clicks">
           <div class="sp-tab-content">
             <Fieldset legend="Item Settings" :toggleable="true">
               <div class="sp-fields">
@@ -108,6 +108,29 @@ If set to an empty string, all words will be treated as both keywords and names.
                 />
               </div>
             </Fieldset>
+            <Fieldset legend="Color Settings" :toggleable="true">
+              <p class="sp-setting-description">
+                Here you can define the colors that are used when you click on items. <br />
+                Each item starts with a default value (usually 0), and left clicking on the item increases its value,
+                while right clicking decreases the value. <br />
+                <br />
+                Each column of the table does the following:
+                <ul>
+                  <li><b>Set Default:</b> Makes this value the default when clearing the board. 0 is probably best.</li>
+                  <li><b>Value:</b> The value for that row.</li>
+                  <li><b>Color:</b> The color to use for that value.</li>
+                  <li>
+                    <b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.
+                  </li>
+                </ul>
+                Remember to <b>Save</b> your changes when you're done.
+              </p>
+              <ClickCountEditor v-model:items="trackerStore.colours" />
+            </Fieldset>
+          </div>
+        </TabPanel>
+        <TabPanel value="board">
+          <div class="sp-tab-content">
             <Fieldset legend="Board Settings" :toggleable="true">
               <div class="sp-fields">
                 <SettingsColorItem v-model="layoutStore.bgColor" label="Background Color" />
@@ -161,27 +184,6 @@ If set to an empty string, all words will be treated as both keywords and names.
                 <SettingsColorItem v-model="trackerStore.totalTextColor" label="Total Text Color" />
               </div>
             </Fieldset>
-          </div>
-        </TabPanel>
-        <TabPanel value="clicks">
-          <div class="sp-tab-content">
-            <span class="sp-setting-description">
-              Here you can define the colors that are used when you click on items. <br />
-              Each item starts with a default value (usually 0), and left clicking on the item increases its value,
-              while right clicking decreases the value. <br />
-              <br />
-              Each column of the table does the following:
-              <ul>
-                <li><b>Set Default:</b> Makes this value the default when clearing the board. 0 is probably best.</li>
-                <li><b>Value:</b> The value for that row.</li>
-                <li><b>Color:</b> The color to use for that value.</li>
-                <li>
-                  <b>Counts Towards Total:</b> When checked, these items are added to the total displayed on the board.
-                </li>
-              </ul>
-              Remember to <b>Save</b> your changes when you're done.
-            </span>
-            <ClickCountEditor v-model:items="trackerStore.colours" />
           </div>
         </TabPanel>
         <TabPanel value="items">
