@@ -1,6 +1,6 @@
 # Click N Track
 
-This is an application for tracking goals while playing goals.
+This is an application for tracking goals while playing games.
 
 I designed this primarily for use by streamers doing various challenges and races, and is made to be customisable to suit your needs.
 
@@ -11,10 +11,14 @@ I designed this primarily for use by streamers doing various challenges and race
 ![Square Grid of Super Mario 64](./docs/filter-name.png)
 
 ## Quick Start
-Click N Track is a single web page that can be run from a local file. No server needed.
+Latest version can be found [here](https://blaketheawesome.github.io/clickntrack/#/).
+
+If you wish to run the application locally, then simply follow these steps.
 1. Download the ZIP in the latest [release](https://github.com/BlakeTheAwesome/clickntrack/releases)
 2. Extract the ZIP to a folder
 3. Open the `index.html` file in your preferred browser
+
+As Click N Track is a single web page that can be run from a local file, no server is needed.
 
 ## Features
 
